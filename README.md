@@ -1,2 +1,3 @@
 # devops-netology
-репозиторий курса DevOps
+Репозиторий курса DevOps
+
