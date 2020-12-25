@@ -1,7 +1,7 @@
-Исключит все папки .terraform и вложенные в них файлы
+Исключит все папки .terraform и вложенные в них файлы:
   * `**/.terraform/*`
 
-Исключит все файлы с расширением .tfstate и включающие в свое имя .tfstate.
+Исключит все файлы с расширением .tfstate и включающие в свое имя .tfstate.:
   * `*.tfstate`
   * `*.tfstate.*`
 
@@ -9,22 +9,22 @@
   * `crash.log`
 
 
-Исключит все файлы с расширением .tfvars
+Исключит все файлы с расширением .tfvars:
   * `*.tfvars`
 
 Исключит файлы override.tf, override.tf.json
-и исключит все файлы начинающиеся с *_override.tf и *_override.tf.json
+и исключит все файлы начинающиеся с *_override.tf и *_override.tf.json:
   * `override.tf`
   * `override.tf.json`
   * `*_override.tf`
   * `*_override.tf.json`
 
-Отслеживать файл example_override.tf даже если он попадает под исключение
+Отслеживать файл example_override.tf даже если он попадает под исключение:
   * `!example_override.tf`
 
-Исключит все файлы включающие в свое имя tfplan
+Исключит все файлы включающие в свое имя tfplan:
   * `example: *tfplan*`
 
-Исключит файлы .terraformrc и terraform.rc
+Исключит файлы .terraformrc и terraform.rc:
   * `.terraformrc`
   * `terraform.rc`
