@@ -2,16 +2,12 @@
 
 **1 - задание.**
 
-  *`$ git log aefea -1`*
+  *`$ git log aefea -1 --pretty=format:'%H %s'`*
 
-    commit aefead2207ef7e2aa5dc81a34aedf0cad4c32545    
-    Author: Alisdair McDiarmid <alisdair@users.noreply.github.com>    
-    Date:   Thu Jun 18 10:29:58 2020 -0400    
-
-    Update CHANGELOG.md
+    aefead2207ef7e2aa5dc81a34aedf0cad4c32545 Update CHANGELOG.md    
    
- полный хеш: *aefead2207ef7e2aa5dc81a34aedf0cad4c32545*    
- комментарий коммита: *Update CHANGELOG.md*
+ Полный хеш: *aefead2207ef7e2aa5dc81a34aedf0cad4c32545*    
+ Комментарий коммита: *Update CHANGELOG.md*
 
 
 **2 - задание.**
@@ -24,8 +20,8 @@
 
     v0.12.23
    
- на этом коммите находится тег: *v0.12.23*    
- комментарий коммита: *v0.12.23*
+ На этом коммите находится тег: *v0.12.23*    
+ Комментарий коммита: *v0.12.23*
 
 
 **3 - задание.**
@@ -38,7 +34,12 @@
     |/    
     *   56cd7859e Merge pull request #23857 from hashicorp/cgriggs01-stable    
     |\    
-   
+ или    
+  *`$ git show b8d720^@ --no-walk -s --pretty=format:'%H'`*
+
+    56cd7859e05c36c06b56d013b55a252d0bb7e158
+    9ea88f22fc6269854151c571162c5bcf958bee2b    
+    
  Два родителя, с краткими хешами: *9ea88f22f* и *56cd7859e*    
 
 
