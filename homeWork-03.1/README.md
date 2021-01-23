@@ -43,7 +43,7 @@ end
   &HISTSIZE
 ```
 
-```bash
+```text
 HISTSIZE
               The number of commands to remember in the command history (see HISTORY below).  If the value is 0, commands are not saved in the history list.  Numeric values less than zero result in every command being saved on the history list (there is no limit).  The shell sets the default value to 500 after reading any startup files.
 ```
@@ -57,7 +57,7 @@ HISTSIZE
 
 {} - вариант списка выполняемого в среде текущего командного интерпретатора.    
 Сторока man bash 173 (при моем размее окна):    
-```bash
+```text
  { list; }
               list is simply executed in the current shell environment.  list must be terminated with a newline or semicolon.  This is known as a group command.  The return status is the exit status of list.  Note that unlike the metacharacters ( and ), { and } are reserved words and must occur where a reserved word  is  permitted  to  be  recognized.
               Since they do not cause a word break, they must be separated from list by whitespace or another shell metacharacter.
@@ -101,8 +101,8 @@ bash is /bin/bash
 
 **13 - задание.**
 
-Комманды `batch` и `at` являются частью пакета at используемого для выполнения разовых задач.
-`at` - добавляет разовое задание в оределенное время. Например : `at -f test.sh 22:30` или `at -f test.sh now + 10 hours`.
+Комманды `batch` и `at` являются частью пакета at используемого для выполнения разовых задач.    
+`at` - добавляет разовое задание в оределенное время. Например : `at -f test.sh 22:30` или `at -f test.sh now + 10 hours`.    
 `batch` - добавляет разовое задание, которое выполнится во время периода низкой загруженности системы. Другими словами, когда средний уровень загрузки системы падает ниже значения 1.5 или того значения, которое задано при вызове atd.
 
 
