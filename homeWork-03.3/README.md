@@ -42,6 +42,25 @@ systemd
 
 **6 - задание.**
 
+```bash
+vagrant@vagrant:~$ strace -e trace=file uname -a
+execve("/usr/bin/uname", ["uname", "-a"], 0x7ffe96366098 /* 24 vars */) = 0
+access("/etc/ld.so.preload", R_OK)      = -1 ENOENT (No such file or directory)
+openat(AT_FDCWD, "/etc/ld.so.cache", O_RDONLY|O_CLOEXEC) = 3                 # кэш динамического линковщика
+openat(AT_FDCWD, "/lib/x86_64-linux-gnu/libc.so.6", O_RDONLY|O_CLOEXEC) = 3  # библиотека стандартных функций
+openat(AT_FDCWD, "/usr/lib/locale/locale-archive", O_RDONLY|O_CLOEXEC) = 3   # функции локали
+Linux vagrant 5.4.0-58-generic #64-Ubuntu SMP Wed Dec 9 08:16:25 UTC 2020 x86_64 x86_64 x86_64 GNU/Linux
++++ exited with 0 +++
+```
+
+Не совсем понятно какой именно вызов имелся в виду в вопросе. Возможно имелся в виду вызов write:
+```bash
+vagrant@vagrant:~$ strace -e trace=stat uname -a
+Linux vagrant 5.4.0-58-generic #64-Ubuntu SMP Wed Dec 9 08:16:25 UTC 2020 x86_64 x86_64 x86_64 GNU/Linux
++++ exited with 0 +++
+```
+т.к. это единственный системный вызов.
+
 `man 2 uname`    
 `/proc`:
 ```text
