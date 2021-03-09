@@ -1,0 +1,145 @@
+rm *.{crt,pem,csr}
+
+vault secrets enable pki
+vault secrets tune -max-lease-ttl=87600h pki
+
+vault write -field=certificate pki/root/generate/internal \
+common_name="netology.biryukov.ru" \
+ttl=87600h > CA_cert.crt
+
+vault write pki/config/urls \
+issuing_certificates="http://127.0.0.1:8200/v1/pki/ca" \
+crl_distribution_points="http://127.0.0.1:8200/v1/pki/crl"
+
+
+vault secrets enable -path=pki_int pki
+
+
+vault secrets tune -max-lease-ttl=43800h pki_int
+
+
+vault write -format=json pki_int/intermediate/generate/internal \
+common_name="netology.biryukov.ru Intermediate Authority" \
+| jq -r '.data.csr' > pki_intermediate.csr
+
+
+vault write -format=json pki/root/sign-intermediate csr=@pki_intermediate.csr \
+format=pem_bundle ttl="43800h" \
+| jq -r '.data.certificate' > intermediate.cert.pem
+
+
+vault write pki_int/intermediate/set-signed certificate=@intermediate.cert.pem
+Success! Data written to: pki_int/intermediate/set-signed
+
+
+vault write pki_int/roles/netology-biryukov-ru \
+allowed_domains="netology.biryukov.ru" \
+allow_subdomains=true \
+max_ttl="720h"
+
+vault write pki_int/issue/netology-biryukov-ru common_name="www.netology.biryukov.ru" ttl="360h"
+
+
+
+
+
+
+
+root@vagrant:~# vault write pki_int/issue/netology-biryukov-ru common_name="www.netology.biryukov.ru" ttl="360h"
+Key                 Value
+---                 -----
+ca_chain            [-----BEGIN CERTIFICATE-----
+MIIDuDCCAqCgAwIBAgIUYeSUEOnhmFy93yTqc8G4qCiB7jMwDQYJKoZIhvcNAQEL
+BQAwHzEdMBsGA1UEAxMUbmV0b2xvZ3kuYmlyeXVrb3YucnUwHhcNMjEwMzA1MTgw
+MzUxWhcNMjYwMzA0MTgwNDIxWjA2MTQwMgYDVQQDEytuZXRvbG9neS5iaXJ5dWtv
+di5ydSBJbnRlcm1lZGlhdGUgQXV0aG9yaXR5MIIBIjANBgkqhkiG9w0BAQEFAAOC
+AQ8AMIIBCgKCAQEAvfVbCKujop7BVXVPIxdZK4hBpSKs+l2pE360tUoU/0nIhm22
+nklz6pNuJym/NlMjQZazJBbdJk9BrXsKwPqwB+iAVhu1oWbFC515TxdFKmoShN2D
+rbnZ4X1s18QyZVyA+Un260yMjHfGI8mQV5ViCFF4dKOS50nogB1MSLZQBMCmVOFE
+P3AIrifc/ip8Nlih0jrjtriJwkNf65OaguxKzf9/ORqStZf6PmS1twBX1BLoH3sj
+TVCwGmJROyaonrqbRYnk/t+OvELhdkkouxg2fnrEQU1iew9FMhF8GcJT26z21Em5
+KirO08tqvYh921mbeP/B03mtC6LsfKfceYXARQIDAQABo4HUMIHRMA4GA1UdDwEB
+/wQEAwIBBjAPBgNVHRMBAf8EBTADAQH/MB0GA1UdDgQWBBRXKTZWtICQXx16N6ed
+2AHRq/4i6DAfBgNVHSMEGDAWgBQdbw2XCiwTPoe6zS8e5PRg/edLtTA7BggrBgEF
+BQcBAQQvMC0wKwYIKwYBBQUHMAKGH2h0dHA6Ly8xMjcuMC4wLjE6ODIwMC92MS9w
+a2kvY2EwMQYDVR0fBCowKDAmoCSgIoYgaHR0cDovLzEyNy4wLjAuMTo4MjAwL3Yx
+L3BraS9jcmwwDQYJKoZIhvcNAQELBQADggEBAMAwWmQ7RaF2DADV52mhDiyLak2D
+fdFxzQjyuhq6aoZQquWHW2QfcnkVVjEbSLVVN2tvyC86z5NBuX6JWtUhR/8zXUuO
+zhKvxPn0zgciPpNhv8DMBvLKfIrmWuHoFBLN/pFwtqwVb/iEKbwPsMKJ8eNjs2qy
+fdb4G9p4Suf6HCghAwSp1gJ35EtqF2HiY/tdPJaXjKHVbreMiZe+HxMGjPh0z0dh
+AHwKz/MljTF9HuqRw+K45oddWOxEJlh4qS7ZjopjjJCcQUuYkolL04WWmkJbwiT2
+STjEabmo7JYIqLGBExWVNMQ3kgxCb3CQB87RCCscHxI6cK8n2PdOGBY/CUI=
+-----END CERTIFICATE-----]
+certificate         -----BEGIN CERTIFICATE-----
+MIIDfzCCAmegAwIBAgIUHe6ElDzxTe26YJSoHzp+Hug46c8wDQYJKoZIhvcNAQEL
+BQAwNjE0MDIGA1UEAxMrbmV0b2xvZ3kuYmlyeXVrb3YucnUgSW50ZXJtZWRpYXRl
+IEF1dGhvcml0eTAeFw0yMTAzMDUxODA0MjBaFw0yMTAzMjAxODA0NTBaMCMxITAf
+BgNVBAMTGHd3dy5uZXRvbG9neS5iaXJ5dWtvdi5ydTCCASIwDQYJKoZIhvcNAQEB
+BQADggEPADCCAQoCggEBAModNiooShC+NfvX4+I5gf1yQcc/C1nuOFYoWu0YN4zg
+6Dpe64Ur/OoUNkOKxoi0LJ0gflnhPcmipcyvH3VPpf2dZnqLgKEW9jVh4XgYRry+
+gKEKz/XUY1Sg4o8xMnLUxSLPGalK0RAjRNYz08zq5KEQH0lf4A6i3N1nIvGgSBkW
+Xad5nDOYcLOhI3nxWIdRm7+W79U0L87+jKl0VkZYvgVJOjKlb9hlWZZxSmMaqouQ
+CldVMAxrPCTWv/KDBQsDrATu2JsdQreipUJVFTVE6FOQ5dEQmV+sO5LXKOhZwCOJ
+COdWk4hzaDZ8sgjVVROcOqeApAhyoStXEEL+oJJn/7ECAwEAAaOBlzCBlDAOBgNV
+HQ8BAf8EBAMCA6gwHQYDVR0lBBYwFAYIKwYBBQUHAwEGCCsGAQUFBwMCMB0GA1Ud
+DgQWBBSatH/wKE8xQDN/aagMIiGu2UvB8zAfBgNVHSMEGDAWgBRXKTZWtICQXx16
+N6ed2AHRq/4i6DAjBgNVHREEHDAaghh3d3cubmV0b2xvZ3kuYmlyeXVrb3YucnUw
+DQYJKoZIhvcNAQELBQADggEBACRr8AD1tRdFTlPHYxxlmYvUYKqnouazJAKRhoOS
+RXUT+geaXC7Xe5iI5GeP4u8lLoK6DgilUTtainaub2henPRtG/GSa2qT4fiSnLlq
+WlY2v5IkqXjI2nboFMFFk2fWfMErSonqjtHjCgob97dRqzn7keI/4PSt21TlJwuQ
+DZcC0oOXtk/sI0KxODZp+p7KGLLyopnZ2cntQhh7luhiTkIB8OFArfSAV+LB3UY0
+JVFWTXZM+NQixfIzZ671lQSKW6r/+31pTEFF5y6eI86GbDE8j9Wxz+uWVwpJ8lXJ
+rHp6Ik1ryRXNyRXtJnLHmOWwYqWg7M+RmA5axvitJKZHcBw=
+-----END CERTIFICATE-----
+expiration          1616263490
+issuing_ca          -----BEGIN CERTIFICATE-----
+MIIDuDCCAqCgAwIBAgIUYeSUEOnhmFy93yTqc8G4qCiB7jMwDQYJKoZIhvcNAQEL
+BQAwHzEdMBsGA1UEAxMUbmV0b2xvZ3kuYmlyeXVrb3YucnUwHhcNMjEwMzA1MTgw
+MzUxWhcNMjYwMzA0MTgwNDIxWjA2MTQwMgYDVQQDEytuZXRvbG9neS5iaXJ5dWtv
+di5ydSBJbnRlcm1lZGlhdGUgQXV0aG9yaXR5MIIBIjANBgkqhkiG9w0BAQEFAAOC
+AQ8AMIIBCgKCAQEAvfVbCKujop7BVXVPIxdZK4hBpSKs+l2pE360tUoU/0nIhm22
+nklz6pNuJym/NlMjQZazJBbdJk9BrXsKwPqwB+iAVhu1oWbFC515TxdFKmoShN2D
+rbnZ4X1s18QyZVyA+Un260yMjHfGI8mQV5ViCFF4dKOS50nogB1MSLZQBMCmVOFE
+P3AIrifc/ip8Nlih0jrjtriJwkNf65OaguxKzf9/ORqStZf6PmS1twBX1BLoH3sj
+TVCwGmJROyaonrqbRYnk/t+OvELhdkkouxg2fnrEQU1iew9FMhF8GcJT26z21Em5
+KirO08tqvYh921mbeP/B03mtC6LsfKfceYXARQIDAQABo4HUMIHRMA4GA1UdDwEB
+/wQEAwIBBjAPBgNVHRMBAf8EBTADAQH/MB0GA1UdDgQWBBRXKTZWtICQXx16N6ed
+2AHRq/4i6DAfBgNVHSMEGDAWgBQdbw2XCiwTPoe6zS8e5PRg/edLtTA7BggrBgEF
+BQcBAQQvMC0wKwYIKwYBBQUHMAKGH2h0dHA6Ly8xMjcuMC4wLjE6ODIwMC92MS9w
+a2kvY2EwMQYDVR0fBCowKDAmoCSgIoYgaHR0cDovLzEyNy4wLjAuMTo4MjAwL3Yx
+L3BraS9jcmwwDQYJKoZIhvcNAQELBQADggEBAMAwWmQ7RaF2DADV52mhDiyLak2D
+fdFxzQjyuhq6aoZQquWHW2QfcnkVVjEbSLVVN2tvyC86z5NBuX6JWtUhR/8zXUuO
+zhKvxPn0zgciPpNhv8DMBvLKfIrmWuHoFBLN/pFwtqwVb/iEKbwPsMKJ8eNjs2qy
+fdb4G9p4Suf6HCghAwSp1gJ35EtqF2HiY/tdPJaXjKHVbreMiZe+HxMGjPh0z0dh
+AHwKz/MljTF9HuqRw+K45oddWOxEJlh4qS7ZjopjjJCcQUuYkolL04WWmkJbwiT2
+STjEabmo7JYIqLGBExWVNMQ3kgxCb3CQB87RCCscHxI6cK8n2PdOGBY/CUI=
+-----END CERTIFICATE-----
+private_key         -----BEGIN RSA PRIVATE KEY-----
+MIIEpAIBAAKCAQEAyh02KihKEL41+9fj4jmB/XJBxz8LWe44Viha7Rg3jODoOl7r
+hSv86hQ2Q4rGiLQsnSB+WeE9yaKlzK8fdU+l/Z1meouAoRb2NWHheBhGvL6AoQrP
+9dRjVKDijzEyctTFIs8ZqUrRECNE1jPTzOrkoRAfSV/gDqLc3Wci8aBIGRZdp3mc
+M5hws6EjefFYh1Gbv5bv1TQvzv6MqXRWRli+BUk6MqVv2GVZlnFKYxqqi5AKV1Uw
+DGs8JNa/8oMFCwOsBO7Ymx1Ct6KlQlUVNUToU5Dl0RCZX6w7ktco6FnAI4kI51aT
+iHNoNnyyCNVVE5w6p4CkCHKhK1cQQv6gkmf/sQIDAQABAoIBAQC2X6WAZNpwQTJ1
+DVmTyFCDYZX5M+oKO+qZ09A4IKH/fPIPuZbLk+WjUpmkWJTMxcd8ANYCRDx8tUbm
+ax73u+cL8fuGmFp5AT8o7CmHNGCf70YiCp+cMwluU74bd0kOVO+NeVKub9Q1u51h
+q2JyhYHH08RncRu8GTkyjt35Kafk+a2qUM+ebAF7MjXC0MuLEXaD6/ceullLE/ee
+oFVL4z6OW5kJvaMwhRT9Yy86N/xkRb6CqVLCzv87kAzktZOCsLO9i70oHr0f/YDT
+jaoV3EzK6iOmRdGHnhNRqpdfXpC0fysp51vjUymzI3ggxYbXh7MWwj9mJrMYSD8d
+r+CPPQABAoGBANGvAKs0P/xngMBT+wviF3ZxjENjzbHncuWiaBFW2uUjg4+ekVY2
+lK+edVX+dj1gQ2O2upiq26T5JZos0yo4UYXJBOkpdGYVxskccANT86W+CNtwMbF+
+yGWeGHXtgEK/+WRfc9nFpM3U1BLM1rFCNJfDeHXuzY7PxJiMT7VQZ/ohAoGBAPbC
+LQ3iRgfMdPRfj7n2R3AEePal06/ASN7GHPHnfT90f61247Kk9yaiIXDw8KhWO+B+
+6Fn16ruyRnG7+rGTO1VpE4RGmFqyyFLua7q7DlbqoH85oFOYX0lIJd0Mn+5YaP6s
+YHvuYNUXEtMGiHFEmOgF4QTrw/4jEqS1pg+OVvORAoGBALMZka6qgITtO3ILyYEK
+6xOGRVJCay2sDd3K7KzyzSGvRe5keKt1D2c6J+r94KzoDmebaqKAPgAZt16LLwr+
+89McMo+dkwinTRX2rk6JZLGLMjGNEUUUj8MMWMRRyp45L6HmTiQSx4PwZ/xu7mqV
+rCp9EeVZxkZXfQr3vhWWyllBAoGAOoS2FpLQtMzB96op9Zn4OxJ0dVnCJ+3b2ij1
+eFDDnSbNmJ+XRChnDFxqvdQF3oYE0SqHg74UGssedZ50x2P5MDopDLeJLgk0BKbS
+GYh+0BH4WfOal/iMsF5RzGhQDUAeNjc+8mUHxcEhD7Z+6Q2xjWTHhlk7M6uxoioJ
+5aqF6GECgYAOOSaSgZXdz79jrf1VcmzkcXUo3/RPjrurY2f2y7j/TA6m//9O0/vK
+yia0KFzbTK5W79gbc9Yqz6hUtlU/7vOO+Y+Lhi+3SDtySeZ5zWKBgXp3cynFC4+D
+ez9XwfVqFo8yO8Vj1RPLaKYQrUwoErTKOBoowfaCOJy+6dsxtu4YUw==
+-----END RSA PRIVATE KEY-----
+private_key_type    rsa
+serial_number       1d:ee:84:94:3c:f1:4d:ed:ba:60:94:a8:1f:3a:7e:1e:e8:38:e9:cf
