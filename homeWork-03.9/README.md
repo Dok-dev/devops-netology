@@ -8,7 +8,7 @@
 
 **2 - задание.**
 
-```bash
+```text
 root@vagrant:~# vault server -dev -dev-listen-address="0.0.0.0:8200"
 ```
 
@@ -19,7 +19,7 @@ root@vagrant:~# vault server -dev -dev-listen-address="0.0.0.0:8200"
 **3 - задание.**
 
 Для начала авторизуемся:
-```bash
+```text
  # в случае упрощенного запуска (-dev) проще сделать это установкой переменных
 root@vagrant:~# export VAULT_ADDR='http://127.0.0.1:8200'
 root@vagrant:~# export VAULT_TOKEN="s.ekWvFEoqKodQlsmoYeQ5xoh8"
@@ -40,7 +40,7 @@ HA Enabled      false
 
 Шаг 1: генерация Root CA
 
-```bash
+```text
  # активируем PKI тип секрета для корневого центра сертификации
 root@vagrant:~# vault secrets enable \
 >     -path=pki_root_ca \
@@ -77,7 +77,7 @@ Success! Data written to: pki_root_ca/config/urls
 
 Шаг 2: генерация Intermediate CA
 
-```bash
+```text
  # активируем PKI тип секрета для промежуточного центра сертификации
 root@vagrant:~# vault secrets enable \
 >     -path=pki_int_ca \
@@ -138,7 +138,7 @@ Success! Data written to: pki_int_ca/config/urls
 **4 - задание.**
 
 Создаем роль, с помощью которой будем выдавать сертификаты для серверов:    
-```bash
+```text
 root@vagrant:~# vault write pki_int_ca/roles/biryukov-ru \
 >  country="Russia Federation" \
 >  locality="Moscow" \
@@ -172,7 +172,7 @@ Success! Data written to: pki_int_ca/roles/biryukov-ru
 ```
 
 Создаем сертификаты и ключ для домена netology.biryukov.ru:    
-```bash
+```text
 root@vagrant:~# vault write -format=json pki_int_ca/issue/biryukov-ru \
 >     common_name="netology.biryukov.ru" \
 >     alt_names="netology.biryukov.ru" \
@@ -188,7 +188,7 @@ cat netology.biryukov.ru.json | jq -r .data.private_key > netology.biryukov.ru.k
 
 **5 - задание.**
 
-```bash
+```text
 root@vagrant:~# mkdir /etc/nginx/cert
 root@vagrant:~# cp netology.biryukov.ru.{key,pem} /etc/nginx/cert/
 
@@ -249,7 +249,7 @@ how to fix it, please visit the web page mentioned above.
 
 **6 - задание.**
 
-```bash
+```text
 root@vagrant:~# ln -s /root/CA_root_cert.crt /usr/local/share/ca-certificates/CA_root_cert.crt
 
  # вызываем сценарий добавления
