@@ -32,6 +32,7 @@ try:
    result_os = os.popen(' && '.join(bash_commands)).read()
 except git.GitError as e:
    print(e)
+   exit(1)
 for result in result_os.split('\n'):
     if result.find('modified') != -1:
         prepare_result = os.path.join(path, (result.replace('\tmodified:   ', '')))
@@ -55,7 +56,8 @@ except Exception:
 
 if os.path.exists(path):
     try:
-        path = git.Repo(path).git_dir
+        git.Repo(path).git_dir
+
         bash_commands = ["cd " + path, "git status"]
         try:
            result_os = os.popen(' && '.join(bash_commands)).read()
