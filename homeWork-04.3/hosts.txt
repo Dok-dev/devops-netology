@@ -1,3 +1,3 @@
-drive.google.com 173.194.220.194
-mail.google.com 172.217.21.133
-google.com 216.58.207.238
+drive.google.com 173.194.73.194
+mail.google.com 64.233.162.19
+google.com 64.233.165.139
