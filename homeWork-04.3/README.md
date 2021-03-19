@@ -1,7 +1,6 @@
 # Домашнее задание «4.3. Языки разметки JSON и YAML»
 
-**1 - задание.**
-
+**1 - задание.**    
 Мы выгрузили JSON, который получили через API запрос к нашему сервису:    
 ```json
 { "info" : "Sample JSON output from our service\t",
@@ -19,7 +18,7 @@
 ```
 
 
-Исправленный:    
+**Исправленный:**       
 ```json
 {
   "info" : "Sample JSON output from our service\t",
@@ -40,11 +39,10 @@
 
 ---
 
-**2 - задание.**
-
+**2 - задание.**    
 В прошлый рабочий день мы создавали скрипт, позволяющий опрашивать веб-сервисы и получать их IP. К уже реализованному функционалу нам нужно добавить возможность записи JSON и YAML файлов, описывающих наши сервисы. Формат записи JSON по одному сервису: { "имя сервиса" : "его IP"}. Формат записи YAML по одному сервису: - имя сервиса: его IP. Если в момент исполнения скрипта меняется IP у сервиса - он должен так же поменяться в yml и json файле.
 
-Решение:
+**Решение:**    
 ```python
 import socket
 import yaml
@@ -87,8 +85,7 @@ with open('hosts.yaml', 'wt') as file:
 
 ---
 
-**Дополнительное задание (со звездочкой).**
-
+**Дополнительное задание (со звездочкой).**    
 Так как команды в нашей компании никак не могут прийти к единому мнению о том, какой формат разметки данных использовать: JSON или YAML, нам нужно реализовать парсер из одного формата в другой. Он должен уметь:
 
 *    Принимать на вход имя файла
@@ -99,20 +96,46 @@ with open('hosts.yaml', 'wt') as file:
 *    Полученный файл должен иметь имя исходного файла, разница в наименовании обеспечивается разницей расширения файлов
 
 
+**Решение:**    
 ```python
-# Получаем массив строк из файла
-with open('hosts.json', 'rt') as file:
+import yaml
+import json
+from sys import argv
+
+try:
+ fileName = argv[1]
+except IndexError:
+    print('[ERROR] You must specify the file name for parsing')
+
+# Пробуем распарсить как JSON
+with open(fileName, 'rt') as file:
     try:
       hostList = json.load(file)
-      print(type(hostList))
-    except json.JSONDecodeError:
-        print('Ошибка формата hosts.json')
+      jsonFormat = True
+      fileName = fileName.split('.', 2)[0] + '.yaml'
+      with open(fileName, 'wt') as newFile:
+          yaml.dump(hostList, newFile, default_flow_style=False, explicit_start=True, explicit_end=True)
+      print('converted to ' + fileName + ' successful')
 
-    for host in hostList:
+    except json.JSONDecodeError as error:
+        jsonFormat = False
+        jsonError = str(error)
+
+# если с JSON все плохо делаем заход на YAML
+if not jsonFormat:
+    with open(fileName, 'rt') as file:
         try:
-            # делаем попытку лукапа доменного имени
-            newIp = socket.gethostbyname(host['host']) 
-            host['ip'] = newIp
-        except socket.SO_ERROR:
-            print('Lookup error!')
+            hostList = yaml.load(file, Loader=yaml.BaseLoader)
+            fileName = fileName.split('.', 2)[0] + '.json'
+            with open(fileName, 'wt') as newFile:
+                json.dump(hostList, fp=newFile, indent=2)
+            print('converted to ' + fileName + ' successful')
+        #Если и с YAML дело дрянь - вываливаем накопившиеся претензии и выходим с ошибкой
+        except yaml.YAMLError as exc:
+            print("[ERROR] The file format does not match the correct json or yaml\n")
+            print('If JSON errors:\n' + jsonError + '\n')
+            if hasattr(exc, 'problem_mark'):
+                print('If YAML errors::')
+                print(exc.__str__())
+            exit(1)
 ```
