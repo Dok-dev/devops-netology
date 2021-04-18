@@ -1,0 +1,36 @@
+﻿sudo docker run -d -ti -v /home/vagrant/docker:/tmp/docker --name amazon amazoncorretto bash
+sudo docker exec -ti amazon bash
+cp /tmp/docker/jenkins.repo /etc/yum.repos.d/jenkins.repo
+rpm --import http://pkg.jenkins-ci.org/redhat/jenkins-ci.org.key
+
+yum update –disablerepo="amzn2-core" 
+yum -y install jenkins
+
+FROM amazoncorretto:latest
+
+RUN yum clean all && yum update -y
+
+
+
+
+#RUN yum -y install java-1.8.0
+#RUN yum remove java-1.7.0-openjdk
+
+RUN wget -O /etc/yum.repos.d/jenkins.repo http://pkg.jenkins-ci.org/redhat/jenkins.repo
+
+RUN rpm --import http://pkg.jenkins-ci.org/redhat-stable/jenkins-ci.org.key
+
+
+
+
+FROM amazoncorretto
+
+ADD https://pkg.jenkins.io/redhat-stable/jenkins.repo /etc/yum.repos.d/
+
+RUN rpm --import https://pkg.jenkins.io/redhat-stable/jenkins.io.key && \
+    yum install -y jenkins
+	
+CMD ["java -jar /usr/lib/jenkins/jenkins.war ]
+
+
+docker build -t 0dok0/amazon-jenkins:ver1 -f amazon_jenkins .
