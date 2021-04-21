@@ -1,2 +1,0 @@
-sudo docker run -d -ti -v /home/vagrant/docker:/tmp/docker --name ubuntu ubuntu bash
-sudo docker exec -ti ubuntu bash
