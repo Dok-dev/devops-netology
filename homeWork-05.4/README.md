@@ -28,7 +28,7 @@ FROM archlinux:latest
 
 RUN pacman -Sy
 
-RUN ppacman -S --noconfirm ponysay
+RUN pacman -S --noconfirm ponysay
 
 ENTRYPOINT ["/usr/bin/ponysay"]
 CMD ["Hey, netology”]
@@ -113,6 +113,7 @@ USER jenkins
 
 WORKDIR "/usr/share/jenkins"
 CMD ["-jar", "jenkins.war"]
+ENTRYPOINT ["java"]
 ```
 
 
@@ -128,7 +129,7 @@ CMD ["-jar", "jenkins.war"]
 
 - Ссылки на образы в вашем хранилище docker-hub    
 **Ответ:**   
-https://hub.docker.com/repository/docker/0dok0/amazon-jenkins
+https://hub.docker.com/repository/docker/0dok0/amazon-jenkins    
 https://hub.docker.com/repository/docker/0dok0/ubuntu-jenkins
 
 код:
