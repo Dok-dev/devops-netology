@@ -145,6 +145,9 @@ docker ps
 #ed1e8482b69a   0dok0/ubuntu-jenkins:ver2   "java -jar jenkins.w…"   6 seconds ago   Up 5 seconds       0.0.0.0:5001->5001/tcp, :::5001->5001/tcp, 0.0.0.0:8081->8081/tcp, :::8081->8081/tcp              ubuntu
 #01809bf128b5   0dok0/amazon-jenkins:ver1   "java -jar /usr/lib/…"   2 hours ago     Up About an hour   0.0.0.0:5000->5000/tcp, :::5000->5000/tcp, 0.0.0.0:8080->8080/tcp, :::8080->8080/tcp, 50000/tcp   amazon
 
+docker logs amazon
+docker logs ubuntu
+
 docker login
 docker push 0dok0/amazon-jenkins:ver1
 docker push 0dok0/ubuntu-jenkins:ver2
