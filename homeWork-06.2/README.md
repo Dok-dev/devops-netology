@@ -13,7 +13,7 @@ docker pull postgres:12
 docker volume create sqlbackup
 docker run -d --name postgres --restart unless-stopped -e POSTGRES_PASSWORD=netology -p 5432:5432 -v sqlbackup:/backups postgres:12
 ```
-```bash
+```
 vagrant@vagrant:~$ sudo docker volume ls
 DRIVER    VOLUME NAME
 local     469d5c547f4e4d87a691c73f1eacc428edec23183dcec3d9ecb584a3ac54ec8a
@@ -29,7 +29,7 @@ c53286af4999   postgres:12   "docker-entrypoint.s…"   6 minutes ago   Up 4 sec
 
 В БД из задачи 1:    
 - создайте пользователя test-admin-user и БД test_db
-```bash
+```
 vagrant@vagrant:~$ sudo docker exec -ti postgres bash
 
 root@c53286af4999:/# su postgres
@@ -380,7 +380,7 @@ test_db=# EXPLAIN VERBOSE SELECT * from clients;
 Создайте бэкап БД test_db и поместите его в volume, предназначенный для бэкапов (см. Задачу 1).   
 
 код для ответа:
-```bash
+```
 root@c53286af4999:/# pg_dump -U postgres test_db > backups/test_db.sql
 exit
 ```
@@ -400,7 +400,7 @@ docker run -d --name postgres2 -e POSTGRES_PASSWORD=netology -p 5432:5432 -v sql
 Восстановите БД test_db в новом контейнере.
 
 код для ответа:
-```bash
+```
 vagrant@vagrant:~$ sudo docker exec -ti postgres2 bash
 
 root@4fcbbbca9855:/# psql -U postgres -c "CREATE DATABASE test_db";
@@ -429,6 +429,9 @@ SET row_security = off;
 -- PostgreSQL database dump complete
 --
 
+psql -U postgres
+```
+```sql
 \c test_db
 CREATE USER "test-admin-user" WITH ENCRYPTED PASSWORD '123456';
 GRANT ALL PRIVILEGES ON DATABASE test_db TO "test-admin-user";
