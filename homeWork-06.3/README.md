@@ -22,9 +22,13 @@
 **Ответ:**    
 ```
 vagrant@vagrant:~$ sudo docker run -d --name mysql -e MYSQL_ROOT_PASSWORD='123456' -p 3306:3306 -v sqlbackup:/sqlbuckup mysql:8
-sudo wget https://raw.githubusercontent.com/netology-code/virt-homeworks/master/06-db-03-mysql/test_data/test_dump.sql /var/lib/docker/volumes/sqlbackup/_data
+
+vagrant@vagrant:~$ sudo wget https://raw.githubusercontent.com/netology-code/virt-homeworks/master/06-db-03-mysql/test_data/test_dump.sql /var/lib/docker/volumes/sqlbackup/_data
+
 vagrant@vagrant:~$ sudo docker exec -ti mysql bash 
+
 root@82788d8c4b50:/#  mysql -u root -p
+
 mysql> \h
 
 mysql> create database test_db;
