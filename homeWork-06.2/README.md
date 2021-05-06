@@ -7,18 +7,29 @@
 
 Приведите получившуюся команду или docker-compose манифест.    
 **Ответ:**    
-Согласно документации официальный образ postgres:12 уже содержит один volume 'VOLUME /var/lib/postgresql/data' для БД, поэтому:
+Согласно документации официальный образ postgres:12 уже содержит один volume 'VOLUME /var/lib/postgresql/data' для БД, но мы можем его перезаписать:
 ```bash
 docker pull postgres:12
 docker volume create sqlbackup
 docker run -d --name postgres --restart unless-stopped -e POSTGRES_PASSWORD=netology -p 5432:5432 -v sqlbackup:/backups postgres:12
-```
-```
+
 vagrant@vagrant:~$ sudo docker volume ls
 DRIVER    VOLUME NAME
 local     469d5c547f4e4d87a691c73f1eacc428edec23183dcec3d9ecb584a3ac54ec8a
 local     sqlbackup
+```
+В случае замена volume:
+```bash
+docker volume create sqlbackup
+docker volume create posgres_db
+docker run -d --name postgres --restart unless-stopped -e POSTGRES_PASSWORD=netology -p 5432:5432 -v sqlbackup:/backups -v posgres_db:/var/lib/postgresql/data  postgres:12
 
+vagrant@vagrant:~$ sudo docker volume ls
+DRIVER    VOLUME NAME
+local     posgres_db
+local     sqlbackup
+```
+```
 vagrant@vagrant:~$ sudo docker ps
 CONTAINER ID   IMAGE         COMMAND                  CREATED         STATUS         PORTS                                       NAMES
 c53286af4999   postgres:12   "docker-entrypoint.s…"   6 minutes ago   Up 4 seconds   0.0.0.0:5432->5432/tcp, :::5432->5432/tcp   postgres
@@ -70,7 +81,7 @@ CREATE TABLE test_db.public.clients (
 id SERIAL PRIMARY KEY,
 fio varchar(250) NOT NULL,
 country varchar(150) NOT NULL,
-order_id SERIAL,
+order_id INT,
 FOREIGN KEY (order_id) REFERENCES orders (id)
 );
 ```
@@ -88,7 +99,8 @@ CREATE USER "test-simple-user" WITH ENCRYPTED PASSWORD '1234';
 - предоставьте пользователю test-simple-user права на SELECT/INSERT/UPDATE/DELETE данных таблиц БД test_db
 ```sql
 \c test_db;
-GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO "test-simple-user";
+GRANT SELECT ON test_db IN SCHEMA public TO "test-simple-user";
+GRANT SELECT, INSERT, UPDATE, DELETE ON test_db IN SCHEMA public TO "test-simple-user";
 ```
 
 Приведите:    
@@ -257,11 +269,6 @@ test_db=# SELECT * from orders;
 |Ritchie Blackmore| Russia|
 
 **Ответ:**    
-Т.к. у нас имеется внешний ключ с номером заказа необходимо добавить еще один пустой заказ к таблие orders:
-```sql
-test_db=# INSERT INTO orders VALUES (6, 'нет заказов', 0);
-```
-Далее:
 ```sql
 test_db=# INSERT INTO clients VALUES 
 (1, 'Иванов Иван Иванович', 'USA', 6), 
@@ -270,6 +277,13 @@ test_db=# INSERT INTO clients VALUES
 (4, 'Ронни Джеймс Дио', 'Russia', 6), 
 (5, 'Ritchie Blackmore', 'Russia', 6);
 INSERT 0 5
+test_db=# INSERT INTO orders VALUES (6, 'нет заказов', 0);
+```
+
+Т.к. у нас имеется внешний ключ с номером заказа необходимо добавить еще один пустой заказ к таблие orders:
+```sql
+test_db=# INSERT INTO orders VALUES (6, 'нет заказов', 0);
+```
 
 test_db=# SELECT * from clients;
  id |         fio          | country | order_id
@@ -361,7 +375,7 @@ Seq Scan — последовательное, блок за блоком, чт�
 rows - ожидаемое количество возвращаемых строк при выполнении операции, по мению планировщика.    
 width - средняя, ожидаемая прланировщиком, длина строки.    
 
-После пересчета и обновления статистики обновления статистики:
+После пересчета и обновления статистики:
 ```sql
 test_db=# ANALYZE clients;
 ANALYZE
@@ -437,6 +451,7 @@ CREATE USER "test-admin-user" WITH ENCRYPTED PASSWORD '123456';
 GRANT ALL PRIVILEGES ON DATABASE test_db TO "test-admin-user";
 GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO "test-admin-user";
 CREATE USER "test-simple-user" WITH ENCRYPTED PASSWORD '1234';
+GRANT SELECT ON test_db IN SCHEMA public TO "test-simple-user";
 GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO "test-simple-user";
 ```
 
