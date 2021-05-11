@@ -247,6 +247,14 @@ test_db=# INSERT INTO orders VALUES
 (5, 'Гитара', 4000);
 INSERT 0 5
 
+# Правильно, отработки счетчика:
+INSERT INTO orders (name, price) VALUES 
+('Шоколад', 10), 
+('Принтер', 3000), 
+('Книга', 500), 
+('Монитор', 7000), 
+('Гитара', 4000);
+
 test_db=# SELECT * from orders;
  id |  name   |  price
 ----+---------+---------
@@ -278,6 +286,17 @@ test_db=# INSERT INTO clients VALUES
 (5, 'Ritchie Blackmore', 'Russia', 6);
 INSERT 0 5
 test_db=# INSERT INTO orders VALUES (6, 'нет заказов', 0);
+
+INSERT 0 5
+test_db=# INSERT INTO orders VALUES (6, 'нет заказов', 0);
+
+# Правильно, отработки счетчика:
+test_db=# INSERT INTO clients (fio, country, order_id) VALUES 
+('Иванов Иван Иванович', 'USA', NULL), 
+('Петров Петр Петрович', 'Canada', NULL), 
+('Иоганн Себастьян Бах', 'Japan', NULL), 
+('Ронни Джеймс Дио', 'Russia', NULL), 
+('Ritchie Blackmore', 'Russia', NULL);
 ```
 
 Т.к. у нас имеется внешний ключ с номером заказа необходимо добавить еще один пустой заказ к таблие orders:
@@ -417,31 +436,11 @@ docker run -d --name postgres2 -e POSTGRES_PASSWORD=netology -p 5432:5432 -v sql
 ```
 vagrant@vagrant:~$ sudo docker exec -ti postgres2 bash
 
-root@4fcbbbca9855:/# psql -U postgres -c "CREATE DATABASE test_db";
+root@4fcbbbca9855:/# psql -U postgres -c "CREATE DATABASE test_db;"
 CREATE DATABASE
 
-root@4fcbbbca9855:/# pg_dump -U postgres test_db < backups/test_db.sql
---
--- PostgreSQL database dump
---
-
--- Dumped from database version 12.6 (Debian 12.6-1.pgdg100+1)
--- Dumped by pg_dump version 12.6 (Debian 12.6-1.pgdg100+1)
-
-SET statement_timeout = 0;
-SET lock_timeout = 0;
-SET idle_in_transaction_session_timeout = 0;
-SET client_encoding = 'UTF8';
-SET standard_conforming_strings = on;
-SELECT pg_catalog.set_config('search_path', '', false);
-SET check_function_bodies = false;
-SET xmloption = content;
-SET client_min_messages = warning;
-SET row_security = off;
-
---
--- PostgreSQL database dump complete
---
+root@4fcbbbca9855:/# psql -U postgres test_db < backups/test_db.sql
+# так же можно использовать утилиту pg_restore
 
 psql -U postgres
 ```

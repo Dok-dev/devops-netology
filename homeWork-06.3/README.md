@@ -245,7 +245,7 @@ innodb_log_buffer_size = 1M
 
 # - Буффер кеширования 30% от ОЗУ
 # Не совсем понятно от чего отталкиваться, но т. к. контейнеру выделено 1Gb (cat /proc/meminfo)
-innodb_buffer_pool_size = 300M
+innodb_buffer_pool_size = 307M
 
 # - Размер файла логов операций 100 Мб
 innodb_log_file_size = 100M
