@@ -62,7 +62,7 @@ ENTRYPOINT ["/elasticsearch-7.12.1/bin/elasticsearch"]
 - ссылку на образ в репозитории dockerhub
 
 **Ответ:**    
-
+https://hub.docker.com/r/0dok0/elasticsearch
 
 
 - ответ `elasticsearch` на запрос пути `/` в json виде
@@ -398,12 +398,3 @@ green  open   test   DbDlIWULT-iqM5dUjif9pA   1   0          0            0     
 Подсказки:
 - возможно вам понадобится доработать `elasticsearch.yml` в части директивы `path.repo` и перезапустить `elasticsearch`
 
-
-**Ответ:**    
-
-
----
-
-### Как оформить ДЗ?
-
-Выполненное домашнее задание пришлите ссылкой на .md-файл в вашем репозитории.
