@@ -62,13 +62,20 @@ ENTRYPOINT ["/elasticsearch-7.12.1/bin/elasticsearch"]
 - ссылку на образ в репозитории dockerhub
 
 **Ответ:**    
+комманды при выполнении:    
+```
+sudo docker build -t 0dok0/elasticsearch -f elasticsearch .
+sudo docker run -d --name elasticsearch -p 9200:9200 -p 9300:9300 0dok0/elasticsearch
+sudo docker login
+sudo docker push 0dok0/elasticsearch
+```
 https://hub.docker.com/r/0dok0/elasticsearch
 
 
 - ответ `elasticsearch` на запрос пути `/` в json виде
 
 **Ответ:**    
-```
+```json
 vagrant@vagrant:/$ curl -X GET 'http://localhost:9200/'
 {
   "name" : "280fc4231b1f",
@@ -97,12 +104,6 @@ vagrant@vagrant:/$ curl -X GET 'http://localhost:9200/'
 
 Далее мы будем работать с данным экземпляром elasticsearch.
 
-комманды при выполнении:    
-```
-sudo docker build -t 0dok0/elasticsearch -f elasticsearch .
-sudo docker run -d --name elasticsearch -p 9200:9200 -p 9300:9300 0dok0/elasticsearch
-```
-
 ---
 
 ## Задача 2
@@ -122,7 +123,7 @@ sudo docker run -d --name elasticsearch -p 9200:9200 -p 9300:9300 0dok0/elastics
 | ind-3 | 2 | 4 |
 
 **Выполнение:**    
-```
+```json
 vagrant@vagrant:/$ curl -X PUT 'http://localhost:9200/ind-1?pretty ' -H 'Content-Type: application/json' -d'
  {
    "settings": {
@@ -170,7 +171,7 @@ vagrant@vagrant:/$ curl -X PUT 'http://localhost:9200/ind-3?pretty ' -H 'Content
 
 Получите список индексов и их статусов, используя API и **приведите в ответе** на задание.    
 **Ответ:**    
-```
+```json
 vagrant@vagrant:/$ curl 'localhost:9200/_cat/indices?v&pretty'
 health status index uuid                   pri rep docs.count docs.deleted store.size pri.store.size
 green  open   ind-1 h_hEWWhYQc-mj_AkuntSAg   1   0          0            0       208b           208b
@@ -180,7 +181,7 @@ yellow open   ind-2 y7La3r00QumIw0D3A19k-g   2   1          0            0      
 
 Получите состояние кластера `elasticsearch`, используя API.    
 **Ответ:**    
-```
+```json
 vagrant@vagrant:/$ curl 'localhost:9200/_cluster/health?pretty'
 {
   "cluster_name" : "netology_test",
@@ -265,7 +266,7 @@ vagrant@vagrant:/$ sudo docker restart elasticsearch
 
 **Приведите в ответе** запрос API и результат вызова API для создания репозитория.     
 **Ответ:**    
-```
+```json
 vagrant@vagrant:/$ curl -X PUT 'http://localhost:9200/_snapshot/netology_backup?pretty ' -H 'Content-Type: application/json' -d'
 {
   "type": "fs",
@@ -280,7 +281,7 @@ vagrant@vagrant:/$ curl -X PUT 'http://localhost:9200/_snapshot/netology_backup?
 
 Создайте индекс `test` с 0 реплик и 1 шардом и **приведите в ответе** список индексов.    
 **Выполнение и ответ:**    
-```
+```json
 vagrant@vagrant:/$ curl -X PUT 'http://localhost:9200/test?pretty ' -H 'Content-Type: application/json' -d'
  {
    "settings": {
@@ -305,7 +306,7 @@ green  open   test  Vrh8U5DrQFuWIQJq96j8fw   1   0          0            0      
 
 **Приведите в ответе** список файлов в директории со `snapshot`ами.    
 **Выполнение и ответ:**    
-```
+```json
 vagrant@vagrant:/$ curl -X PUT 'localhost:9200/_snapshot/netology_backup/snapshot_1?wait_for_completion=true&pretty'
 {
   "snapshot" : {
@@ -349,7 +350,7 @@ drwxr-xr-x 3 elastic elastic 4.0K May 18 13:07 indices
 
 Удалите индекс `test` и создайте индекс `test-2`. **Приведите в ответе** список индексов.    
 **Выполнение и ответ:**    
-```
+```json
 vagrant@vagrant:/$ curl -X DELETE 'http://localhost:9200/test?pretty'
 {
   "acknowledged" : true
@@ -381,7 +382,7 @@ green  open   test-2 MN3054O0TGiuwILGiVBNSg   1   0          0            0     
 
 **Приведите в ответе** запрос к API восстановления и итоговый список индексов.    
 **Выполнение и ответ:**    
-```
+```json
 vagrant@vagrant:/$ curl -X POST 'localhost:9200/_snapshot/netology_backup/snapshot_1/_restore?pretty'
 {
   "accepted" : true
