@@ -29,7 +29,7 @@ db.killOp(<opid>)
 db.setProfilingLevel(1, 120)
     { "was" : 0,
       "slowms" : 100,
-      “ok” : 1 
+      "ok" : 1 
     }
 db.getProfilingStatus()
     { "was" : 1,
