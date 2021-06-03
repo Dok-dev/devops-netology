@@ -1,0 +1,38 @@
+repos:
+  # Разрешаем все репозитории в своем аккаунте
+- id: github.com/Dok-dev/*
+  # Все вертки
+  branch: /.*/
+
+  # apply_requirements sets the Apply Requirements for all repos that match.
+  apply_requirements: [approved, mergeable]
+
+  # Workflow по умолчанию
+  workflow: prodflow
+
+  # Разрешить переназначение на стороне клиента в atlantis.yaml
+  allowed_overrides: [apply_requirements, workflow, delete_source_branch_on_merge]
+
+  # Разрешенные для переназначения workflow
+  allowed_workflows: ["prodflow", "stageflow"]
+
+  # Разрешение на изменение workflow
+  allow_custom_workflows: true
+
+  # Удалить ветку-источник при слиянии в основную
+  delete_source_branch_on_merge: true
+  
+# В workflow используемом по-умолчанию (prodflow) отключаем lock состояния при планировании
+workflows:
+  prodflow:
+    plan:
+      steps:
+      - run: terraform workspace select -no-color prod
+      - init
+      - plan:
+          extra_args: ["-lock", "false"]
+    apply:
+      steps:
+      - run: terraform workspace select -no-color prod
+      - apply
+      
