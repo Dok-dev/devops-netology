@@ -26,7 +26,7 @@ module "ec2_cluster" {
   source                 = "terraform-aws-modules/ec2-instance/aws"
   version                = "~> 2.0"
 
-  name                   = "Netology-cluster"
+  name                   = "Netology-cluster-node"
   # количество инстансев (машин) согласно воркспейсу
   instance_count         = local.web_instance_count_map[terraform.workspace]
 
