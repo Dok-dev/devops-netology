@@ -139,7 +139,7 @@ package main
 
 import "testing"
 
-func TestPrint_d3(t *testing.T) {
+func TestPrintD3(t *testing.T) {
 
 	testRange := PrintD3(-110,110)
 
