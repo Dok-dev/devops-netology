@@ -43,7 +43,8 @@ You can skip specific rules or tags by adding them to your configuration file:
 warn_list:  # or 'skip_list' to silence them completely
   - experimental  # all rules tagged as experimental
 ```
-    > После установки прав на файлы (mode):
+   >> После установки прав на файлы (mode):
+    
 ```
 vagrant@vagrant:/mnt/prime/hw-08.2_Ansible-2-playbook/playbook$ ansible-lint
 vagrant@vagrant:/mnt/prime/hw-08.2_Ansible-2-playbook/playbook$ 
@@ -278,6 +279,8 @@ elasticsearch              : ok=13   changed=0    unreachable=0    failed=0    s
 
 9. Подготовьте README.md файл по своему playbook. В нём должно быть описано: что делает playbook, какие у него есть параметры и теги.
 10. Готовый playbook выложите в свой репозиторий, в ответ предоставьте ссылку на него.
+    >**Ответ:**   
+    >https://github.com/Dok-dev/devops-netology/tree/main/hw-08.2_Ansible-2-playbook/playbook
 
 ## Необязательная часть
 
@@ -287,5 +290,3 @@ elasticsearch              : ok=13   changed=0    unreachable=0    failed=0    s
 4. Все переменные для нового play определите в отдельный файл `group_vars/logstash/vars.yml`.
 5. Logstash конфиг должен конфигурироваться в части ссылки на elasticsearch (можно взять, например его IP из facts или определить через vars).
 6. Дополните README.md, протестируйте playbook, выложите новую версию в github. В ответ предоставьте ссылку на репозиторий.
-    >**Ответ:**   
-    >https://github.com/Dok-dev/devops-netology/tree/main/hw-08.1_Ansible-01-base/playbook
