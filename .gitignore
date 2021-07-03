@@ -1,3 +1,8 @@
+**/*.gz
+**/*.pem
+**/id_rsa
+**/.pub
+
 # Local .idea directories
 **/.idea/*
 
@@ -76,7 +81,6 @@ fabric.properties
 ### Intellij+all Patch ###
 # Ignores the whole .idea folder and all .iml files
 .idea/
-
 
 
 *.iml

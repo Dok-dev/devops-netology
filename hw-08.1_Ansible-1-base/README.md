@@ -86,7 +86,7 @@ ubuntu                     : ok=3    changed=0    unreachable=0    failed=0    s
 
     >**Выполнение:**   
 ```
-vagrant@vagrant:~/devops-netology/hw-08.1_Ansible-01-base/playbook$ sudo ansible-playbook site.yml -i inventory/prod.yml
+vagrant@vagrant:~/devops-netology/hw-08.1_Ansible-01-base/playbook$ ansible-playbook site.yml -i inventory/prod.yml
 
 PLAY [Print os facts] *******************************************************************************************************************************************************************************************************************************************************************************************************
 
@@ -129,7 +129,7 @@ Encryption successful
 
     >**Выполнение:**   
 ```
-vagrant@vagrant:~/devops-netology/hw-08.1_Ansible-01-base/playbook$ sudo ansible-playbook site.yml -i inventory/prod.yml --ask-vault-pass
+vagrant@vagrant:~/devops-netology/hw-08.1_Ansible-01-base/playbook$ ansible-playbook site.yml -i inventory/prod.yml --ask-vault-pass
 Vault password:
 
 PLAY [Print os facts] *******************************************************************************************************************************************************************************************************************************************************************************************************
@@ -172,7 +172,7 @@ nsible-doc -t lookup password
 
     >**Выполнение:**   
 ```
-vagrant@vagrant:~/devops-netology/hw-08.1_Ansible-01-base/playbook$ sudo ansible-playbook site.yml -i inventory/prod.yml --ask-vault-pass
+vagrant@vagrant:~/devops-netology/hw-08.1_Ansible-01-base/playbook$ ansible-playbook site.yml -i inventory/prod.yml --ask-vault-pass
 Vault password:
 
 PLAY [Print os facts] *******************************************************************************************************************************************************************************************************************************************************************************************************
@@ -251,7 +251,7 @@ Encryption successful
 
     >**Выполнение:**   
 ```
-vagrant@vagrant:~/devops-netology/hw-08.1_Ansible-01-base/playbook$ sudo ansible-playbook site.yml -i inventory/prod.yml --ask-vault-pass
+vagrant@vagrant:~/devops-netology/hw-08.1_Ansible-01-base/playbook$ ansible-playbook site.yml -i inventory/prod.yml --ask-vault-pass
 Vault password:
 
 PLAY [Print os facts] *******************************************************************************************************************************************************************************************************************************************************************************************************
@@ -347,3 +347,5 @@ fedora1
 ```
 
 6. Все изменения должны быть зафиксированы и отправлены в вашей личный репозиторий.
+    >**Ответ:**   
+    >https://github.com/Dok-dev/devops-netology/tree/main/hw-08.1_Ansible-01-base/playbook

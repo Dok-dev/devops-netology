@@ -1,0 +1,6 @@
+---
+elasticsearch:
+  hosts:
+    elasticsearch:
+      ansible_connection: ssh
+      ansible_user: root
