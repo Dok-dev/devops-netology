@@ -77,7 +77,7 @@
         dest: /etc/profile.d/elk.sh
         mode: 0755
       tags: elastic
-
+###Kibana###
 - name: Install Kibana
   hosts: elasticsearch
   tasks:
@@ -114,3 +114,48 @@
         dest: /etc/profile.d/kibana.sh
         mode: 0755
       tags: kibana
+
+###Logstash###
+- name: Install Logstash
+  debugger: on_failed
+  hosts: logstash
+  tasks:
+    - name: Upload tar.gz Logstash from remote URL
+      get_url:
+        url: "https://artifacts.elastic.co/downloads/logstash/logstash-{{ logstash_version }}-linux-x86_64.tar.gz"
+        dest: "/tmp/logstash-{{ logstash_version }}-linux-x86_64.tar.gz"
+        mode: 0644
+        timeout: 60
+        force: true
+      register: get_logstash
+      until: get_logstash is succeeded
+      tags: logstash
+    - name: Create directrory for Logstash
+      file:
+        state: directory
+        path: "{{ logstash_home }}"
+        mode: 0755
+      tags: logstash
+    - name: Extract Logstash in the installation directory
+      become: true
+      unarchive:
+        copy: false
+        src: "/tmp/logstash-{{ logstash_version }}-linux-x86_64.tar.gz"
+        dest: "{{ logstash_home }}"
+        extra_opts: [--strip-components=1]
+        creates: "{{ logstash_home }}/bin/logstash"
+      tags:
+        - logstash
+    - name: Set environment Logstash
+      become: true
+      template:
+        src: templates/logstash.sh.j2
+        dest: /etc/profile.d/logstash.sh
+        mode: 0755
+      tags: logstash
+    - name: Make Logstash config
+      template:
+        src: logstash.conf.j2
+        dest: "{{ logstash_home }}/config/logstash.conf"
+        mode: 0644
+      tags: logstash

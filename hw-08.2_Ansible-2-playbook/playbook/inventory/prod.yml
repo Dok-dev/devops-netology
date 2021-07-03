@@ -1,6 +1,13 @@
 ---
-elasticsearch:
-  hosts:
+all:
+  children:
     elasticsearch:
-      ansible_connection: ssh
-      ansible_user: root
+      hosts:
+        elasticsearch1:
+          ansible_connection: ssh
+          ansible_user: root
+    logstash:
+      hosts:
+        logstash1:
+          ansible_connection: ssh
+          ansible_user: root
