@@ -1,0 +1,8 @@
+---
+- name: Install ELK
+  hosts: all
+  roles:
+    - java
+    - elasticsearch
+    - kibana
+#    - logstash

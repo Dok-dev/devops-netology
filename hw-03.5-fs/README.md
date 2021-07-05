@@ -1,7 +1,7 @@
 # Домашнее задание «3.5. Файловые системы»
 
-**1 - задание.**
-
+**1 - задание.**    
+Узнайте о [sparse](https://ru.wikipedia.org/wiki/%D0%A0%D0%B0%D0%B7%D1%80%D0%B5%D0%B6%D1%91%D0%BD%D0%BD%D1%8B%D0%B9_%D1%84%D0%B0%D0%B9%D0%BB) (разряженных) файлах.
 
 **Ответ**    
 Pазреженные файлы (sparse files) это такие файлы, которые занимают меньше дискового пространства, чем их собственный размер. 
@@ -11,7 +11,8 @@ Pазреженные файлы (sparse files) это такие файлы, к
 
 ---
 
-**2 - задание.**
+**2 - задание.**    
+Могут ли файлы, являющиеся жесткой ссылкой на один объект, иметь разные права доступа и владельца? Почему?
 
 
 **Ответ**    
@@ -19,8 +20,24 @@ Pазреженные файлы (sparse files) это такие файлы, к
 
 ---
   
-**3 - задание.**
+**3 - задание.**    
+Сделайте `vagrant destroy` на имеющийся инстанс Ubuntu. Замените содержимое Vagrantfile следующим:
 
+    ```bash
+    Vagrant.configure("2") do |config|
+      config.vm.box = "bento/ubuntu-20.04"
+      config.vm.provider :virtualbox do |vb|
+        lvm_experiments_disk0_path = "/tmp/lvm_experiments_disk0.vmdk"
+        lvm_experiments_disk1_path = "/tmp/lvm_experiments_disk1.vmdk"
+        vb.customize ['createmedium', '--filename', lvm_experiments_disk0_path, '--size', 2560]
+        vb.customize ['createmedium', '--filename', lvm_experiments_disk1_path, '--size', 2560]
+        vb.customize ['storageattach', :id, '--storagectl', 'SATA Controller', '--port', 1, '--device', 0, '--type', 'hdd', '--medium', lvm_experiments_disk0_path]
+        vb.customize ['storageattach', :id, '--storagectl', 'SATA Controller', '--port', 2, '--device', 0, '--type', 'hdd', '--medium', lvm_experiments_disk1_path]
+      end
+    end
+    ```
+
+    Данная конфигурация создаст новую виртуальную машину с двумя дополнительными неразмеченными дисками по 2.5 Гб.
 
 **Ответ**    
 ```txt
@@ -48,8 +65,8 @@ sdc                    8:32   0  2.5G  0 disk
 
 ---
 
-**4 - задание.**
-
+**4 - задание.**    
+Используя `fdisk`, разбейте первый диск на 2 раздела: 2 Гб, оставшееся пространство.
 
 **Ответ**    
 ```bash
@@ -108,7 +125,8 @@ sdc                    8:32   0  2.5G  0 disk
 
 ---
 
-**5 - задание.**
+**5 - задание.**    
+Используя `sfdisk`, перенесите данную таблицу разделов на второй диск.
 
 ```bash
 vagrant@vagrant:~$ sudo sfdisk -d /dev/sdb | sudo sfdisk /dev/sdc
@@ -158,8 +176,10 @@ sdc                    8:32   0  2.5G  0 disk
 └─sdc2                 8:34   0    1K  0 part
 ```
 
+---
 
-**6 - задание.**
+**6 - задание.**    
+Соберите `mdadm` RAID1 на паре разделов 2 Гб.
 
 ```bash
 vagrant@vagrant:~$ mdadm --create --verbose /dev/md0 --level=1 --raid-devices=2 /dev/sdb1 /dev/sdc1
@@ -198,8 +218,10 @@ sdc                    8:32   0  2.5G  0 disk
 └─sdc2                 8:34   0    1K  0 part
 ```
 
+---
 
-**7 - задание.**
+**7 - задание.**   
+Соберите `mdadm` RAID0 на второй паре маленьких разделов.
 
 ```bash
 vagrant@vagrant:~$ sudo mdadm --create --verbose /dev/md1 --level=0 --raid-devices=2 /dev/sdb2 /dev/sdc2
@@ -244,9 +266,11 @@ sdc                    8:32   0  2.5G  0 disk
 └─sdc2                 8:34   0  511M  0 part
   └─md1                9:1    0 1018M  0 raid0
 ```
- 
- 
-**8 - задание.**
+
+---
+
+**8 - задание.**   
+Создайте 2 независимых PV на получившихся md-устройствах.
 
 ```bash
 vagrant@vagrant:~$ sudo pvcreate /dev/md0
@@ -261,8 +285,10 @@ vagrant@vagrant:~$ sudo pvs
   /dev/sda5  vgvagrant lvm2 a--   <63.50g       0
 ```
 
+---
 
-**9 - задание.**
+**9 - задание.**    
+Создайте общую volume-group на этих двух PV.
 
 ```bash
 vagrant@vagrant:~$ sudo vgcreate raidvg /dev/md0 /dev/md1
@@ -281,8 +307,10 @@ root@vagrant:~# vgs
   vgvagrant   1   2   0 wz--n- <63.50g     0
 ```
 
+---
 
-**10 - задание.**
+**10 - задание.**    
+Создайте LV размером 100 Мб, указав его расположение на PV с RAID0.
 
 ```bash
 root@vagrant:~# vgremove raidvg
@@ -313,8 +341,10 @@ sdc                    8:32   0  2.5G  0 disk
     └─raid0vg-lvol0  253:2    0  100M  0 lvm
 ```
 
+---
 
-**11 - задание.**
+**11 - задание.**    
+Создайте `mkfs.ext4` ФС на получившемся LV.
 
 ```bash
 root@vagrant:~# mkfs.ext4 /dev/raid0vg/lvol0
@@ -327,8 +357,11 @@ Creating journal (1024 blocks): done
 Writing superblocks and filesystem accounting information: done
 ```
 
+---
 
-**12 - задание.**
+**12 - задание.**    
+Смонтируйте этот раздел в любую директорию, например, `/tmp/new`.
+
 
 ```bash
 root@vagrant:~# mkdir /tmp/new
@@ -337,8 +370,10 @@ root@vagrant:~# df | grep lvol0
 /dev/mapper/raid0vg-lvol0      95088        72     87848   1% /tmp/new
 ```
 
+---
 
-**13 - задание.**
+**13 - задание.**    
+Поместите туда тестовый файл, например `wget https://mirror.yandex.ru/ubuntu/ls-lR.gz -O /tmp/new/test.gz`.
 
 ```bash
 root@vagrant:~# cd /tmp/new
@@ -358,20 +393,30 @@ root@vagrant:/tmp/new# ls
 lost+found  test.gz
 ```
 
+---
 
-**14 - задание.**
+**14 - задание.**    
+Прикрепите вывод `lsblk`.
 
 ![14](14.gif)
 
+---
 
+**15 - задание.**    
+Протестируйте целостность файла:
 
-**15 - задание.**
+    ```bash
+    root@vagrant:~# gzip -t /tmp/new/test.gz
+    root@vagrant:~# echo $?
+    0
+    ```
 
 ![15](15.gif)
 
+---
 
-
-**16 - задание.**
+**16 - задание.**    
+Используя pvmove, переместите содержимое PV с RAID0 на RAID1.
 
 ```bash
 root@vagrant:/# vgextend raid0vg /dev/md0
@@ -402,28 +447,40 @@ sdc                    8:32   0  2.5G  0 disk
   └─md1                9:1    0 1018M  0 raid0
 ```
 
+---
 
-**17 - задание.**
+**17 - задание.**    
+Сделайте `--fail` на устройство в вашем RAID1 md.
 
 ```bash
 root@vagrant:/# mdadm /dev/md0 --fail /dev/sdb1
 mdadm: set /dev/sdb1 faulty in /dev/md0
 ```
 
+---
 
-**18 - задание.**
+**18 - задание.**    
+Подтвердите выводом `dmesg`, что RAID1 работает в деградированном состоянии.
 
 ![18](18.png)
 
+---
 
+**19 - задание.**    
+Протестируйте целостность файла, несмотря на "сбойный" диск он должен продолжать быть доступен:
 
-**19 - задание.**
+    ```bash
+    root@vagrant:~# gzip -t /tmp/new/test.gz
+    root@vagrant:~# echo $?
+    0
+    ```
 
 ![19](15.gif)
 
+---
 
-
-**20 - задание.**
+**20 - задание.**    
+Погасите тестовый хост, `vagrant destroy`.
 
 ```txt
 $ vagrant destroy
@@ -431,3 +488,12 @@ $ vagrant destroy
 ==> default: Forcing shutdown of VM...
 ==> default: Destroying VM and associated drives...
 ```
+
+---
+**ОТЗЫВ ПРЕПОДАВАТЕЛЯ**
+
+Петр Шило    
+19 февр. 2021 22:35
+
+*Здравствуйте, Тимофей.*    
+*Спасибо за выполненное задание. Отличная работа. Удачи в дальнейшем прохождении курса.*

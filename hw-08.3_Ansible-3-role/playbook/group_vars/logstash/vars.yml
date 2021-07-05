@@ -1,0 +1,6 @@
+---
+logstash_version: "7.13.2"
+logstash_home: "/opt/logstash/{{ logstash_version }}"
+# Elastic fo Logstash config
+logstash_elastic_ip: "{{ hostvars['elasticsearch1']['ansible_default_ipv4']['address'] }}"
+# To check: 'ansible elasticsearch -m ansible.builtin.setup -i inventory/prod.yml'
