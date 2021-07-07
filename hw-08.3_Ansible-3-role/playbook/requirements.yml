@@ -13,3 +13,8 @@
     scm: git
     version: "1.0.0"
     name: elastic
+
+  - src: git@github.com:Dok-dev/Dok-dev/logstash-role
+    scm: git
+    version: "1.0.0"
+    name: logstash

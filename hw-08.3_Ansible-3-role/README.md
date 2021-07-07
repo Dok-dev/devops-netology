@@ -42,7 +42,7 @@ Starting galaxy role install process
 
 vagrant@vagrant:/mnt/prime/hw-08.3_Ansible-3-role/playbook$ cd /home/vagrant/.ansible/roles/java
 
-# Установим дравер докера, который нужен для тестирования этой роли
+# Установим драйвер докера, который нужен для тестирования этой роли
 vagrant@vagrant:~/.ansible/roles/java$ sudo pip3 install molecule-docker
 
 vagrant@vagrant:~/.ansible/roles/java$ sudo molecule test -s default
@@ -85,3 +85,5 @@ Starting galaxy role install process
 3. В ролях добавьте тестирование в раздел `verify.yml`. Данный раздел должен проверять, что elastic запущен и возвращает успешный статус по API, web-интерфейс kibana отвечает без кодов ошибки, logstash через команду `logstash -e 'input { stdin { } } output { stdout {} }'`.
 4. Убедитесь в работоспособности своего стека. Возможно, потребуется тестировать все роли одновременно.
 5. Выложите свои roles в репозитории. В ответ приведите ссылки.
+    >**Ответ:**   
+    >https://github.com/Dok-dev/logstash-role   

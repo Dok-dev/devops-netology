@@ -5,4 +5,4 @@
     - mnt-homeworks-ansible
     - elastic
     - kibana
-#    - logstash
+    - logstash
