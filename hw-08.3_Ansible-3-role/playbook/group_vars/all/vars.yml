@@ -1,3 +1,13 @@
 ---
-java_jdk_version: 11.0.11
-java_oracle_jdk_package: jdk-11.0.11_linux-x64_bin.tar.gz
+java_jdk_version: "11.0.11"
+jdk_distr_name: "jdk-11.0.11_linux-x64_bin.tar.gz"
+
+elastic_version: "7.10.1"
+elastic_home: "/opt/elastic/{{ elastic_version }}"
+
+kibana_version: "7.13.2"
+kibana_home: "/opt/kibana/{{ kibana_version }}"
+
+#logstash_version: "7.13.2"
+#logstash_home: "/opt/logstash/{{ logstash_version }}"
+#logstash_elastic_ip: "{{ hostvars['elasticsearch1']['ansible_default_ipv4']['address'] }}"

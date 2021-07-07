@@ -2,7 +2,7 @@
   - src: git@github.com:netology-code/mnt-homeworks-ansible.git
     scm: git
     version: "1.0.1"
-    name: java 
+    name: mnt-homeworks-ansible
    
   - src: git@github.com:Dok-dev/kibana-role.git
     scm: git

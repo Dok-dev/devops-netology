@@ -2,7 +2,7 @@
 - name: Install ELK
   hosts: all
   roles:
-    - java
-    - elasticsearch
+    - mnt-homeworks-ansible
+    - elastic
     - kibana
 #    - logstash

@@ -45,12 +45,7 @@ vagrant@vagrant:/mnt/prime/hw-08.3_Ansible-3-role/playbook$ cd /home/vagrant/.an
 # Установим дравер докера, который нужен для тестирования этой роли
 vagrant@vagrant:~/.ansible/roles/java$ sudo pip3 install molecule-docker
 
-vagrant@vagrant:~/.ansible/roles/java$ sudo molecule test
-...
-PLAY RECAP *********************************************************************
-localhost                  : ok=2    changed=2    unreachable=0    failed=0    skipped=1    rescued=0    ignored=0
-
-INFO     Pruning extra files from scenario ephemeral directory
+vagrant@vagrant:~/.ansible/roles/java$ sudo molecule test -s default
 ```
 3. Перейдите в каталог с ролью elastic-role и создайте сценарий тестирования по умолчаню при помощи `molecule init scenario --driver-name docker`.
 4. Добавьте несколько разных дистрибутивов (centos:8, ubuntu:latest) для инстансов и протестируйте роль, исправьте найденные ошибки, если они есть.
@@ -63,14 +58,25 @@ No config file found; using defaults
 - Role kibana-role was created successfully
 INFO     Initialized role in /mnt/devops/roles/kibana-role successfully.
 ```
-6. На основе tasks из старого playbook заполните новую role. Разнесите переменные между `vars` и `default`. 
-Проведите тестирование на разных дистрибитивах (centos:7, centos:8, ubuntu).
+6. На основе tasks из старого playbook заполните новую role. Разнесите переменные между `vars` и `default`. Проведите тестирование на разных дистрибитивах (centos:7, centos:8, ubuntu).
 7. Выложите все roles в репозитории. Проставьте тэги, используя семантическую нумерацию.
-
 8. Добавьте roles в `requirements.yml` в playbook.
+    >**Выполнение:**   
+```
+Starting galaxy role install process
+- mnt-homeworks-ansible (1.0.1) is already installed, skipping.
+- extracting kibana to /home/vagrant/.ansible/roles/kibana
+- kibana (1.0.0) was installed successfully
+- extracting elastic to /home/vagrant/.ansible/roles/elastic
+- elastic (1.0.0) was installed successfully
+```
 9. Переработайте playbook на использование roles.
 10. Выложите playbook в репозиторий.
 11. В ответ приведите ссылки на оба репозитория с roles и одну ссылку на репозиторий с playbook.
+    >**Ответ:**   
+    >https://github.com/Dok-dev/elastic-role    
+    >https://github.com/Dok-dev/kibana-role    
+    >https://github.com/Dok-dev/devops-netology/tree/main/hw-08.2_Ansible-2-playbook/playbook    
 
 ## Необязательная часть
 

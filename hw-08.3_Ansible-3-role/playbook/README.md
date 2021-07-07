@@ -1,6 +1,6 @@
 Training playbook
 =========
-Download binaries from official websites and install Java, Elasticsearch, Kibana and Logstash.
+Downloads binaries from official websites and installs Java, Elasticsearch, Kibana, and Logstash (ELK) using the roles.
 
 Inventory
 --------------
