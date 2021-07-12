@@ -317,9 +317,9 @@ vagrant@vagrant:/mnt/prime/hw-08.4_Ansible-4-module/my_own_namespace/my_own_coll
 vagrant@vagrant:/mnt/prime/hw-08.4_Ansible-4-module/my_own_namespace/my_own_collection$ cp ~/test/ansible/lib/ansible/modules/my_own_module.py plugins/modules
 ```
 10. Single task playbook преобразуйте в single task role и перенесите в collection. У role должны быть default всех параметров module
-11. Создайте playbook для использования этой role.
 	>**Выполнение:**   
 	>https://github.com/Dok-dev/devops-netology/tree/main/hw-08.4_Ansible-4-module/playbook2/collections/ansible_collections/my_own_namespace/my_own_collection/roles/create_file
+11. Создайте playbook для использования этой role.
 12. Заполните всю документацию по collection, выложите в свой репозиторий, поставьте тег `1.0.0` на этот коммит.
 13. Создайте .tar.gz этой collection: `ansible-galaxy collection build` в корневой директории collection.
 	>**Выполнение:**    
@@ -328,10 +328,10 @@ vagrant@vagrant:/mnt/prime/hw-08.4_Ansible-4-module/my_own_namespace/my_own_coll
 Created collection for my_own_namespace.my_own_collection at /mnt/prime/hw-08.4_Ansible-4-module/my_own_namespace/my_own_collection/my_own_namespace-my_own_collection-1.0.0.tar.gz
 ```
 14. Создайте ещё одну директорию любого наименования, перенесите туда single task playbook и архив c collection.
+
 15. Установите collection из локального архива: `ansible-galaxy collection install <archivename>.tar.gz`
 	>**Выполнение:**    
 ```
-vagrant@vagrant:/mnt/prime/hw-08.4_Ansible-4-module/mkdir playbook2 && cd playbook2
 vagrant@vagrant:/mnt/prime/hw-08.4_Ansible-4-module/playbook2$ ansible-galaxy collection install -p collections my_own_namespace-my_own_collection-1.0.0.tar.gz
 Starting galaxy collection install process
 [WARNING]: The specified collections path '/mnt/prime/hw-08.4_Ansible-4-module/playbook2/collections' is not part of the configured Ansible collections paths
