@@ -1,0 +1,5 @@
+---
+- name: Create file whis some content
+  hosts: localhost
+  roles:
+    - my_own_namespace.my_own_collection.create_file

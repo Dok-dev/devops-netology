@@ -1,0 +1,7 @@
+---
+- name: Converge
+  hosts: all
+  tasks:
+    - name: "Include create_file"
+      include_role:
+        name: "create_file"

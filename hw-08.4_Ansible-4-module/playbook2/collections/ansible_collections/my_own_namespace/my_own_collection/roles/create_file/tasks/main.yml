@@ -1,0 +1,12 @@
+---
+# tasks file for create_file
+  - name: run my_own_module
+    my_own_module:
+      name: "{{ file_name }}"
+      path: "{{ path_to_file }}"
+      content: "{{ file_content }}"
+      rewrite: "{{ rewrite_perm }}"
+    register: testout
+  - name: print testout
+    debug:
+      msg: "{{ testout }}"

@@ -1,0 +1,6 @@
+---
+test:
+  hosts:
+    localhost:
+      ansible_connection: ssh
+      ansible_user: vagrant

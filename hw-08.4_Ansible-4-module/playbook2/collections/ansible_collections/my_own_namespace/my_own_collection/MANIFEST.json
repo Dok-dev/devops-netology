@@ -1,0 +1,30 @@
+{
+ "collection_info": {
+  "namespace": "my_own_namespace",
+  "name": "my_own_collection",
+  "version": "1.0.0",
+  "authors": [
+   "Timofey Biryukov <example@domain.com>"
+  ],
+  "readme": "README.md",
+  "tags": [],
+  "description": "Educational collection.",
+  "license": [
+   "BSD"
+  ],
+  "license_file": null,
+  "dependencies": {},
+  "repository": "https://github.com/Dok-dev/ansible_collection",
+  "documentation": "http://docs.example.com",
+  "homepage": "http://example.com",
+  "issues": "http://example.com/issue/tracker"
+ },
+ "file_manifest_file": {
+  "name": "FILES.json",
+  "ftype": "file",
+  "chksum_type": "sha256",
+  "chksum_sha256": "cbb0c066cecd25d59bbc9f1d7eb4b2c7737d1ca583f82da6973fa4edada75732",
+  "format": 1
+ },
+ "format": 1
+}

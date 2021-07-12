@@ -1,0 +1,14 @@
+---
+- name: Create file whis some content
+  hosts: localhost
+  tasks:
+  - name: run my_own_module
+    my_own_namespace.my_own_collection.my_own_module:
+      name: "HelloWorld.txt"
+      path: "/tmp/module_test"
+      content: "Netology students\n"
+      rewrite: False
+    register: testout
+  - name: print testout
+    debug:
+      msg: '{{ testout }}'

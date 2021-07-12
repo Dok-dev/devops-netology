@@ -1,0 +1,5 @@
+---
+  - src: git@github.com:netology-code/mnt-homeworks-ansible.git
+    scm: git
+    version: "1.0.1"
+    name: mnt-homeworks-ansible
