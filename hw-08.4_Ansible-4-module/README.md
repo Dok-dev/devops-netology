@@ -202,6 +202,23 @@ Netology students
 5. Напишите single task playbook и используйте module в нём.
 	>**Выполнение:**    
 ```
+(venv) vagrant@vagrant:~/test/ansible$ cat playbook.yml
+---
+- name: Create file whis some content
+  hosts: localhost
+  tasks:
+  - name: run my_own_module
+    my_own_module:
+      name: "HelloWorld.txt"
+      path: "/tmp/module_test"
+      content: "Netology students\n"
+      rewrite: False
+    register: testout
+  - name: print testout
+    debug:
+      msg: '{{ testout }}'
+```
+```
 (venv) vagrant@vagrant:~/test/ansible$ ansible-playbook playbook.yml
 [WARNING]: You are running the development version of Ansible. You should only run Ansible from "devel" if you are modifying the Ansible engine, or trying out features under development. This is a rapidly changing source of code and can become unstable at any point.
 [WARNING]: No inventory was parsed, only implicit localhost is available
@@ -301,6 +318,8 @@ vagrant@vagrant:/mnt/prime/hw-08.4_Ansible-4-module/my_own_namespace/my_own_coll
 ```
 10. Single task playbook преобразуйте в single task role и перенесите в collection. У role должны быть default всех параметров module
 11. Создайте playbook для использования этой role.
+	>**Выполнение:**   
+	>https://github.com/Dok-dev/devops-netology/tree/main/hw-08.4_Ansible-4-module/playbook2/collections/ansible_collections/my_own_namespace/my_own_collection/roles/create_file
 12. Заполните всю документацию по collection, выложите в свой репозиторий, поставьте тег `1.0.0` на этот коммит.
 13. Создайте .tar.gz этой collection: `ansible-galaxy collection build` в корневой директории collection.
 	>**Выполнение:**    
@@ -312,8 +331,7 @@ Created collection for my_own_namespace.my_own_collection at /mnt/prime/hw-08.4_
 15. Установите collection из локального архива: `ansible-galaxy collection install <archivename>.tar.gz`
 	>**Выполнение:**    
 ```
-vagrant@vagrant:/mnt/prime/hw-08.4_Ansible-4-module/playbook2$ ansible-galaxy collection install -p my_own_namespace-my_own_collection-1.0.0.tar.gz
-ERROR! You must specify a collection name or a requirements file.
+vagrant@vagrant:/mnt/prime/hw-08.4_Ansible-4-module/mkdir playbook2 && cd playbook2
 vagrant@vagrant:/mnt/prime/hw-08.4_Ansible-4-module/playbook2$ ansible-galaxy collection install -p collections my_own_namespace-my_own_collection-1.0.0.tar.gz
 Starting galaxy collection install process
 [WARNING]: The specified collections path '/mnt/prime/hw-08.4_Ansible-4-module/playbook2/collections' is not part of the configured Ansible collections paths
