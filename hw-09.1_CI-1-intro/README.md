@@ -27,8 +27,13 @@
 
 Если всё отработало в рамках ожидания - выгрузить схемы workflow для импорта в XML. Файлы с workflow приложить к решению задания.
 
-	>**Ответ:**    
-	>[Bugs Workflow](bugs_workflow.xml)    
-    >[Develop Workflow](develop_workflow.xml)    
-	>![Kanban](kanban.png)    
-	>![Scram](scram.png)
+> **Ответ:**    
+>
+>[Bugs Workflow](bugs_workflow.xml)    
+>[Develop Workflow](develop_workflow.xml)   
+>
+>Kanban
+>![Kanban](kanban.png)    
+>
+>Scram
+>![Scram](scram.png)
