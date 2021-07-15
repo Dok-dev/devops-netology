@@ -1,6 +1,0 @@
----
-# defaults file for create_file
-file_name: "netology.txt"
-path_to_file: "/tmp/module_test"
-file_content: "Netology students\n"
-rewrite_perm: False

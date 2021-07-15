@@ -24,6 +24,7 @@ options:
         required: False
         type: str
     path:
+        description: Path to file
         type: str
         required: True
     rewrite:
