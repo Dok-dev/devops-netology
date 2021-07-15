@@ -1,6 +1,5 @@
 #!/usr/bin/python
 
-# Copyright: (c) 2018, Terry Jones <terry.jones@example.org>
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 from __future__ import (absolute_import, division, print_function)
 __metaclass__ = type
@@ -9,7 +8,7 @@ from ansible.module_utils._text import to_bytes
 
 DOCUMENTATION = r'''
 ---
-module: my_test
+module: my_own_module
 
 short_description: This is my test module
 
@@ -22,8 +21,18 @@ description: This is my longer description explaining my test module.
 options:
     name:
         description: This is the message to send to the test module.
-        required: true
+        required: False
         type: str
+    path:
+        type: str
+        required: True
+    rewrite:
+        type:bool
+        required: False
+        default: True
+    content:
+        type: str
+        required: True
     new:
         description:
             - Control to demo if the result of this module is changed or not.
@@ -33,27 +42,27 @@ options:
 # Specify this value according to your collection
 # in format of namespace.collection.doc_fragment_name
 extends_documentation_fragment:
-    - my_namespace.my_collection.my_doc_fragment_name
+    - my_namespace.my_own_collection.my_doc_fragment_name
 
 author:
-    - Your Name (@yourGitHubHandle)
+    - Your Name (@Dok-dev )
 '''
 
 EXAMPLES = r'''
 # Pass in a message
 - name: Test with a message
-  my_namespace.my_collection.my_test:
+  my_namespace.my_own_collection.my_own_module:
     name: hello world
 
 # pass in a message and have changed true
 - name: Test with a message and changed output
-  my_namespace.my_collection.my_test:
+  my_namespace.my_own_collection.my_own_module:
     name: hello world
     new: true
 
 # fail the module
 - name: Test failure of the module
-  my_namespace.my_collection.my_test:
+  my_namespace.my_own_collection.my_own_module:
     name: fail me
 '''
 
@@ -124,25 +133,25 @@ def run_module():
     # in the event of a successful module execution, you will want to
     # simple AnsibleModule.exit_json(), passing the key/value results
 
-    if module.params['path'][:-1] == '/':
-      generate_path = module.params['path'] + module.params['name']
-    else:
-      generate_path = module.params['path'] + '/' + module.params['name']
-    need_create = os.access(generate_path, os.F_OK) and not module.params['rewrite']
+    generate_path = os.path.join(module.params['path'], module.params['name'])
 
-    # if the user is working with this module in only check mode we do not
-    # want to make any changes to the environment, just return the current
-    # state with no modifications
-    if module.check_mode or need_create:
+    need_recreate = os.access(generate_path, os.F_OK) and not module.params['rewrite']
+
+    if module.check_mode or need_recreate:
+        result['original_message'] = 'already exists'
+        result['changed'] = False
         module.exit_json(**result)
-
-    os.makedirs(module.params['path'], exist_ok=True)
-    with open(generate_path, 'wb') as newone:
-      newone.write(to_bytes(module.params['content']))
-    result['original_message'] = 'Successful created'
-    result['message'] = 'goodbye'
-    result['changed'] = True
-    module.exit_json(**result)
+    else:
+        try:
+            os.makedirs(module.params['path'], exist_ok=True)
+            with open(generate_path, 'wb') as newone:
+                newone.write(str.encode(module.params['content'], encoding='utf-8'))
+            result['original_message'] = 'Successful created'
+            result['message'] = 'goodbye'
+            result['changed'] = True
+            module.exit_json(**result)
+        except OSError as err:
+            module.fail_json(msg='You requested this to fail. ' + 'OS error: {0}'.format(err), **result)
 
 
 def main():
