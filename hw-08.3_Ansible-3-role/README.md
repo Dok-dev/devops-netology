@@ -76,7 +76,7 @@ Starting galaxy role install process
     >**Ответ:**   
     >https://github.com/Dok-dev/elastic-role    
     >https://github.com/Dok-dev/kibana-role    
-    >https://github.com/Dok-dev/devops-netology/tree/main/hw-08.2_Ansible-2-playbook/playbook    
+    >https://github.com/Dok-dev/devops-netology/tree/main/hw-08.3_Ansible-3-role/playbook    
 
 ## Необязательная часть
 

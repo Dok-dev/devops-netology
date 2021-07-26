@@ -20,7 +20,7 @@
 > **Выполнение:**    
 ```
 vagrant@vagrant:~$ wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.6.2.2472-linux.zip
-vagrant@vagrant:~$ unzip sonar-scanner-cli-4.6.2.2472-linux.zip | sudo mv sonar-scanner-4.6.2.2472-linux /var/lib
+vagrant@vagrant:~$ unzip sonar-scanner-cli-4.6.2.2472-linux.zip && sudo mv sonar-scanner-4.6.2.2472-linux /var/lib
 vagrant@vagrant:~$ export PATH=$PATH:/var/lib/sonar-scanner-4.6.2.2472-linux/bin
 ```
 
