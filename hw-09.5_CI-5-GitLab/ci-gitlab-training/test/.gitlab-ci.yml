@@ -1,0 +1,52 @@
+# Пайплайн для тестирования собранного образа
+
+stages:
+  - testing
+
+# Переменные, image и services в шапку т.к. везде одинаковО (можно использовать в каждой джобе свои)
+variables:
+  BUILDING_IMAGE: $CI_REGISTRY_IMAGE/python-api
+
+image: docker:latest
+
+services:
+  - docker:dind
+
+# before_script так же выносим для всех общий
+before_script:
+  - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
+
+testing_job:
+  stage: testing
+
+  # Run this job in a branch where a Dockerfile exists only
+  rules:
+    - if: '$TEST_DISABLED'
+      when: never
+    - if: $CI_COMMIT_BRANCH
+      exists:
+        - Dockerfile
+    - if: '$CI_COMMIT_BRANCH == "master"'
+
+  script:
+    - |
+        echo -e "\033[1;36m Run testing on branch '$CI_COMMIT_BRANCH'.\033[0m"
+        docker run -d --name python-api -p 5290:5290 "${BUILDING_IMAGE}:latest"
+        count=1
+        until docker exec python-api curl -i http://localhost:5290 || [ $count -gt 120 ]; do
+          sleep 1
+          count=$(( $count + 1 ))
+          if [ "$count" -eq 120 ]; then
+              echo -e "\033[1;31m The service is not available!\033[0m" >&2
+              exit 1
+          fi
+        done
+        echo "python-api service ready"
+
+        if docker exec python-api curl -s http://localhost:5290/get_info | grep Running
+        then
+            echo -e "\033[1;32m The test was passed successfully!\033[0m"
+        else
+            echo -e "\033[1;31m The test faled!\033[0m" >&2
+            exit 1
+        fi

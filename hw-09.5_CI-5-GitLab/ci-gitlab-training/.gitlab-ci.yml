@@ -1,0 +1,65 @@
+stages:
+  - build
+  - build_and_deploy
+  - testing
+
+# Переменные, image и services в шапку т.к. везде одинаковО (можно использовать в каждой джобе свои)
+variables:
+  BUILDING_IMAGE: $CI_REGISTRY_IMAGE/python-api
+
+image: docker:latest
+
+services:
+  - docker:dind
+
+# before_script так же выносим для всех общий
+before_script:
+  - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
+
+build_job:
+  stage: build
+
+  # Run this job in a branch where a Dockerfile exists only and branch is not "master".
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "master"'
+      when: never
+    - if: $CI_COMMIT_BRANCH
+      exists:
+        - Dockerfile
+
+  script:
+    - |
+        tag=":$CI_COMMIT_REF_SLUG"
+        echo -e "\033[1;36m Running on branch '$CI_COMMIT_BRANCH': with ${tag} tag.\033[0m"
+        docker build -t "${BUILDING_IMAGE}${tag}" .
+
+
+build_and_deploy_job:
+  stage: build_and_deploy
+    # Run this job in a branch where a Dockerfile exists only
+  rules:
+    - if: $CI_COMMIT_BRANCH
+      exists:
+        - Dockerfile
+    - if: '$CI_COMMIT_BRANCH == "master"'
+
+  script:
+    - |
+        tag=":latest"
+        echo -e "\033[1;36m Running on branch '$CI_COMMIT_BRANCH': with ${tag} tag. 
+              Image will be pushed.\033[0m"
+        echo "${BUILDING_IMAGE}${tag}"
+        docker build -t "${BUILDING_IMAGE}${tag}" .
+        docker push "$CI_REGISTRY/dok-dev/ci-gitlab-training/python-api${tag}"
+
+trigger_test:
+  stage: testing
+  trigger:
+    include: test/.gitlab-ci.yml
+  needs: [build_and_deploy_job]
+  rules:
+    - changes:
+       - DokerFile
+       - python-api.py
+       - test/*
+
