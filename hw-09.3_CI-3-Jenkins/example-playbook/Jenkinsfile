@@ -16,7 +16,6 @@ pipeline {
                 sh 'ansible-galaxy install -r requirements.yml -p roles'
                 ansiblePlaybook inventory: 'inventory/prod.yml', playbook: 'site.yml'
             }
-
         }
     }
 }
