@@ -87,5 +87,5 @@ PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 > **Ответ:**    
 > https://github.com/Dok-dev/devops-netology/blob/main/hw-10.1_Monitoring-base/2021-08-11-awesome-monitoring.log
 
-P.S.: количество собираемых метрик должно быть не менее 4-х.
+P.S.: количество собираемых метрик должно быть не менее 4-х.    
 P.P.S.: по желанию можно себя не ограничивать только сбором метрик из `/proc`.
