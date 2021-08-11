@@ -1,6 +1,5 @@
 #! /usr/bin/python3
 
-from __future__ import print_function
 import os
 import time
 import json
@@ -8,8 +7,8 @@ from collections import namedtuple
 
 
 def setLogName(path):
-    ''' Get time structure "time.struct_time" and set log name
-    '''
+    ''' Get time structure "time.struct_time" and set log name. '''
+
     struct = time.localtime()
     filename = os.path.join(path, time.strftime('%Y-%m-%d', struct) + '-awesome-monitoring.log')
     return filename
@@ -17,8 +16,9 @@ def setLogName(path):
 
 def cpu_load():
     ''' Return the information in /proc/loadavg
-    as a dictionary
+    as a dictionary.
     '''
+
     with open('/proc/loadavg', 'r', encoding='utf-8') as f:
         one_line = f.read()
         cpu_info = {'LoadPerMinute': one_line.split(' ')[0],
@@ -30,7 +30,8 @@ def cpu_load():
 
 def meminfo():
     ''' Return the information in /proc/meminfo
-    as a dictionary '''
+    as a dictionary. '''
+
     meminfo_dict = {}
 
     with open('/proc/meminfo', 'r', encoding='utf-8') as f:
@@ -62,8 +63,8 @@ def netdevs():
     return device_data
 
 def disk_usage(path):
-    """Return disk usage statistics about the given path.
-    """
+    ''' Return disk usage statistics about the given path. '''
+
     st = os.statvfs(path)
     free = st.f_bavail * st.f_frsize
     total = st.f_blocks * st.f_frsize
