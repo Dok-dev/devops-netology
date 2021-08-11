@@ -31,7 +31,7 @@ with open('hosts.txt', 'wt') as file:
         file.write(line + '\n')
 
 with open('hosts.json', 'wt') as file:
-        json.dump(jsonList, fp=file, indent=2)
+    json.dump(jsonList, fp=file, indent=2)
 
 with open('hosts.yaml', 'wt') as file:
     yaml.dump(jsonList, file, default_flow_style=False, explicit_start=True, explicit_end=True)
