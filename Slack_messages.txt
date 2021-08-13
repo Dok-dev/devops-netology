@@ -1,0 +1,45 @@
+Сергей Андрюнин  
+8:44 PM
+https://www.ozon.ru/product/linux-api-ischerpyvayushchee-rukovodstvo-kerrisk-maykl[…]=OGzaGfOOR2leeSoAKE11jy-apkiedEe0VGBLE864i4s&keywords=Linux+Api
+OZON.ruOZON.ru
+Книга "Linux API. Исчерпывающее руководство  Керриск Майкл" Керриск Майкл  – купить книгу ISBN 978-5-4461-0985-2 с быстрой доставкой в интернет-магазине OZON
+В наличии Книга "Linux API. Исчерпывающее руководство Керриск Майкл" (Керриск Майкл), Питер в интернет-магазине OZON со скидкой! :white_check_mark: Отзывы и фото :truck: Быстрая доставка по России (499 kB)
+https://www.ozon.ru/product/linux-api-ischerpyvayushchee-rukovodstvo-kerrisk-maykl-kerrisk-maykl-211432985/?asb=iitcRlGkyze5M5e6xLuYHAi1iwAxAhAZbLcEkiE9U4I%253D&asb2=OGzaGfOOR2leeSoAKE11jy-apkiedEe0VGBLE864i4s&keywords=Linux+Api
+8:44
+https://www.ozon.ru/product/yadro-linux-opisanie-protsessa-razrabotki-148242098/?a[…]NUgxFMZNKfgxJakIa5M9gOA&keywords=%D0%AF%D0%B4%D1%80%D0%BE+Linux
+OZON.ruOZON.ru
+Книга "Ядро Linux. Описание процесса разработки" Лав Роберт  – купить книгу ISBN 978-5-907114-29-6 с быстрой доставкой в интернет-магазине OZON
+В наличии Книга "Ядро Linux. Описание процесса разработки" (Лав Роберт), Вильямс в интернет-магазине OZON со скидкой! :white_check_mark: Отзывы и фото :truck: Быстрая доставка по России (253 kB)
+https://www.ozon.ru/product/yadro-linux-opisanie-protsessa-razrabotki-148242098/?asb=ekscWvmfrG9Wqm8QI3MiFXo9d7UuyXdqhC7UKW80lVQ%253D&asb2=04esfxammxUHZcQTiBGVNUgxFMZNKfgxJakIa5M9gOA&keywords=%D0%AF%D0%B4%D1%80%D0%BE+Linux
+8:44
+Как обещал скидываю книги по Linux
+
+
+Сергей Андрюнин  
+9:15
+
+# Monitoring
+
+```
+$ helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+$ helm repo update
+$ kubectl create namespace monitoring
+
+$ helm -n monitoring install --replace -f ./configs/k8s/kube-prometheus-stack-values.yaml kube-prometheus prometheus-community/kube-prometheus-stack
+$ helm -n monitoring upgrade -f ./configs/k8s/kube-prometheus-stack-values.yaml kube-prometheus prometheus-community/kube-prometheus-stack
+
+$ kubectl get po,svc,ing -n monitoring 
+
+$ kubectl --namespace monitoring port-forward svc/kube-prometheus-grafana 3000:80
+
+$ kubectl apply -f grafana-ingress.yml -n monitoring
+```
+
+helm-charts
+Prometheus Community Kubernetes Helm Charts https://prometheus-community.github.io/helm-charts
+Prometheus community Helm charts
+
+9:17
+Для получения кастом valuses
+
+helm show values prometheus-community/kube-prometheus-stack > values.yaml
