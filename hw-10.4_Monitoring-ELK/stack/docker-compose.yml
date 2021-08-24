@@ -1,0 +1,152 @@
+---
+version: '3.2'
+services:
+
+  es-hot:
+    build:
+      context: elasticsearch/
+      args:
+        ELK_VERSION: $ELK_VERSION
+    container_name: es-hot
+    environment:
+      node.name: es-hot
+      discovery.seed_hosts: es-warm
+      cluster.initial_master_nodes: es-hot,es-warm
+      bootstrap.memory_lock: "true"
+      ES_JAVA_OPTS: "-Xms1024m -Xmx1024m"
+      ELASTIC_PASSWORD: test
+    volumes:
+      - type: bind
+        source: ./elasticsearch/config/elasticsearch.yml
+        target: /usr/share/elasticsearch/config/elasticsearch.yml
+        read_only: true
+      - type: volume
+        source: es-hot
+        target: /usr/share/elasticsearch/data
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+      nofile:
+        soft: 65536
+        hard: 65536
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    networks:
+      - elastic
+    depends_on:
+      - es-warm
+
+  es-warm:
+    build:
+      context: elasticsearch/
+      args:
+        ELK_VERSION: $ELK_VERSION
+    container_name: es-warm
+    environment:
+      - node.name=es-warm
+      - discovery.seed_hosts=es-hot
+      - cluster.initial_master_nodes=es-hot,es-warm
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - "ELASTIC_PASSWORD=test"
+    volumes:
+      - type: bind
+        source: ./elasticsearch/config/elasticsearch.yml
+        target: /usr/share/elasticsearch/config/elasticsearch.yml
+        read_only: true
+      - type: volume
+        source: es-warm
+        target: /usr/share/elasticsearch/data
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+      nofile:
+        soft: 65536
+        hard: 65536
+    networks:
+      - elastic
+
+  kibana:
+    build:
+      context: kibana/
+      args:
+        ELK_VERSION: $ELK_VERSION
+    container_name: kibana
+    volumes:
+      - type: bind
+        source: ./kibana/config/kibana.yml
+        target: /usr/share/kibana/config/kibana.yml
+        read_only: true
+    ports:
+      - "5601:5601"
+    environment:
+      ELASTICSEARCH_URL: http://es-hot:9200
+      ELASTICSEARCH_HOSTS: '["http://es-hot:9200","http://es-warm:9200"]'
+    networks:
+      - elastic
+    depends_on:
+      - es-hot
+      - es-warm
+
+  logstash:
+    build:
+      context: logstash/
+      args:
+        ELK_VERSION: $ELK_VERSION
+    container_name: logstash
+    environment:
+      LS_JAVA_OPTS: "-Xmx512m -Xms512m"
+    ports:
+      - "5044:5044"
+    volumes:
+      - ./logstash/config/logstash.conf:/etc/logstash/conf.d/logstash.conf:Z
+      - type: bind
+        source: ./logstash/config/logstash.yml
+        target: /usr/share/logstash/config/logstash.yml
+        read_only: true
+    networks:
+      - elastic
+    depends_on:
+      - es-hot
+      - es-warm
+
+  filebeat:
+    build:
+      context: filebeat/
+      args:
+        ELK_VERSION: $ELK_VERSION
+    container_name: filebeat
+    privileged: true
+    user: root
+    volumes:
+      - ./filebeat/config/filebeat.yml:/usr/share/filebeat/filebeat.yml:Z
+      - /var/lib/docker:/var/lib/docker:Z
+      - /var/run/docker.sock:/var/run/docker.sock:Z
+    networks:
+      - elastic
+    depends_on:
+      - logstash
+      - kibana
+
+  some_application:
+    image: library/python:3.9-alpine
+    container_name: some_app
+    volumes:
+      - ./pinger/run.py:/opt/run.py:Z
+    entrypoint: python3 /opt/run.py
+    networks:
+      - elastic
+
+volumes:
+  es-warm:
+    driver: local
+  es-hot:
+    driver: local
+
+networks:
+  elastic:
+    driver: bridge
+    
