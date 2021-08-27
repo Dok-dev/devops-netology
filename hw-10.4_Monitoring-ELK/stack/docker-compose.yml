@@ -102,7 +102,9 @@ services:
     ports:
       - "5044:5044"
     volumes:
-      - ./logstash/config/logstash.conf:/etc/logstash/conf.d/logstash.conf:Z
+      - type: bind
+        source: ./logstash/pipeline
+        target: /usr/share/logstash/pipeline
       - type: bind
         source: ./logstash/config/logstash.yml
         target: /usr/share/logstash/config/logstash.yml
@@ -139,6 +141,11 @@ services:
     entrypoint: python3 /opt/run.py
     networks:
       - elastic
+    depends_on:
+      - es-hot
+      - logstash
+      - filebeat
+      
 
 volumes:
   es-warm:
