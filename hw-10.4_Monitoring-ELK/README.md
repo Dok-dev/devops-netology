@@ -53,18 +53,18 @@ sudo sysctl -w vm.max_map_count=262144
 sudo systemctl restart docker
 ```
 > **Ответ:**    
-> ![1.1](1.1.png)   
+> ![1.1](./img/1.1.png)   
 > 
-> ![1.2](1.2.png)
+> ![1.2](./img/1.2.png)
 
 ## Задание 2
 
 Перейдите в меню [создания index-patterns  в kibana](http://localhost:5601/app/management/kibana/indexPatterns/create)
 и создайте несколько index-patterns из имеющихся.
 > **Ответ:**    
-> ![2.0](2.0.png)    
+> ![2.0](./img/2.0.png)    
 >     
-> ![2.3](2.3.png)
+> ![2.3](./img/2.3.png)
 
 Перейдите в меню просмотра логов в kibana (Discover) и самостоятельно изучите как отображаются логи и как производить 
 поиск по логам.
@@ -75,9 +75,9 @@ sudo systemctl restart docker
 
 > **Ответ:**    
 > Индекс в Elasticsearch:    
-> ![2](2.png)    
+> ![2](./img/2.png)    
 >     
 > В Kibana:   
-> ![2.1](2.1.png)    
+> ![2.1](./img/2.1.png)    
 > 
-> ![2.2](2.2.png)    
+> ![2.2](./img/2.2.png)    
