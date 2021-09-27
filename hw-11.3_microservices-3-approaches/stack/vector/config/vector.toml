@@ -1,0 +1,12 @@
+[sources.source_docker]
+type = "docker_logs"
+docker_host = "http://localhost:2375"
+include_containers = [ "storage", "uploader", "security" ]
+
+[sinks.elasticsearch_out]
+type = "elasticsearch"
+inputs = [ "source_docker" ]
+endpoint = "http://es-hot:9200"
+index = "stdout-%F"
+mode = "normal"
+compression = "none"

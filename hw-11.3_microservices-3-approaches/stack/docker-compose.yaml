@@ -1,0 +1,222 @@
+version: '3.2'
+
+services:
+  storage:
+    image: minio/minio:latest
+    command: server /data
+    restart: always
+    expose: 
+      - 9000
+    environment:
+      MINIO_ROOT_USER: ${Storage_AccessKey:-STORAGE_ACCESS_KEY}
+      MINIO_ROOT_PASSWORD: ${Storage_Secret:-STORAGE_SECRET_KEY}
+      MINIO_PROMETHEUS_AUTH_TYPE: public
+    volumes:
+      - data:/data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 20s
+      retries: 3
+    networks:
+      - micoservices
+
+  createbuckets:
+    image: minio/mc
+    depends_on:
+      - storage
+    restart: on-failure
+    entrypoint: > 
+      /bin/sh -c "
+      sleep 30 &&
+      /usr/bin/mc config host add storage http://storage:9000 ${Storage_AccessKey-STORAGE_ACCESS_KEY} ${Storage_Secret-STORAGE_SECRET_KEY} &&
+      /usr/bin/mc mb --ignore-existing storage/${Storage_Bucket:-data} &&
+      /usr/bin/mc policy set download storage/${Storage_Bucket:-data} &&
+      exit 0;
+      "
+    networks:
+      - micoservices
+
+  uploader:
+    build: ./uploader
+    depends_on:
+      - storage
+      - createbuckets
+    expose: 
+      - 3000
+    environment:
+      PORT: 3000
+      S3_HOST: storage
+      S3_PORT: 9000
+      S3_ACCESS_KEY: ${Storage_AccessKey:-STORAGE_ACCESS_KEY}
+      S3_ACCESS_SECRET: ${Storage_Secret:-STORAGE_SECRET_KEY}
+      S3_BUCKET: ${Storage_Bucket:-STORAGE_BUCKET}
+    networks:
+      - micoservices
+  
+  security:
+    build: ./security
+    expose: 
+      - 3000
+    environment:
+      PORT: 3000
+    networks:
+      - micoservices
+
+  gateway:
+    image: nginx:alpine
+    volumes:
+      - ./gateway/nginx.conf:/etc/nginx/nginx.conf:ro
+    ports:
+      - "80:8080"
+    depends_on:
+      - storage
+      - uploader
+      - security
+    networks:
+      - micoservices
+
+  es-hot:
+    build:
+      context: elasticsearch/
+      args:
+        ELK_VERSION: $ELK_VERSION
+    container_name: es-hot
+    environment:
+      node.name: es-hot
+      discovery.seed_hosts: es-warm
+      cluster.initial_master_nodes: es-hot,es-warm
+      bootstrap.memory_lock: "true"
+      ES_JAVA_OPTS: "-Xms1024m -Xmx1024m"
+      ELASTIC_PASSWORD: ${Storage_Secret:-STORAGE_SECRET_KEY}
+    volumes:
+      - type: bind
+        source: ./elasticsearch/config/elasticsearch.yml
+        target: /usr/share/elasticsearch/config/elasticsearch.yml
+        read_only: true
+      - type: volume
+        source: es-hot
+        target: /usr/share/elasticsearch/data
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+      nofile:
+        soft: 65536
+        hard: 65536
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    networks:
+      - micoservices
+    depends_on:
+      - es-warm
+      - gateway
+
+  es-warm:
+    build:
+      context: elasticsearch/
+      args:
+        ELK_VERSION: $ELK_VERSION
+    container_name: es-warm
+    environment:
+      - node.name=es-warm
+      - discovery.seed_hosts=es-hot
+      - cluster.initial_master_nodes=es-hot,es-warm
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - "ELASTIC_PASSWORD=qwerty123456"
+    volumes:
+      - type: bind
+        source: ./elasticsearch/config/elasticsearch.yml
+        target: /usr/share/elasticsearch/config/elasticsearch.yml
+        read_only: true
+      - type: volume
+        source: es-warm
+        target: /usr/share/elasticsearch/data
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+      nofile:
+        soft: 65536
+        hard: 65536
+    networks:
+      - micoservices
+
+  kibana:
+    build:
+      context: kibana/
+      args:
+        ELK_VERSION: $ELK_VERSION
+    container_name: kibana
+    volumes:
+      - type: bind
+        source: ./kibana/config/kibana.yml
+        target: /usr/share/kibana/config/kibana.yml
+        read_only: true
+    ports:
+      - "5601:8081"
+    environment:
+      ELASTICSEARCH_URL: http://es-hot:9200
+      ELASTICSEARCH_HOSTS: '["http://es-hot:9200","http://es-warm:9200"]'
+    networks:
+      - micoservices
+    depends_on:
+      - es-hot
+      
+   vector:
+    build:
+      context: vector/
+    container_name: vector
+    ports:
+      - "8383:8383"
+    volumes:
+      - type: bind
+        source: ./vector/config/vector.toml
+        target: /etc/vector/vector.toml
+        read_only: true
+    networks:
+      - micoservices
+    depends_on:
+      - es-hot
+      - es-warm
+      
+  prometheus:
+    image: prom/prometheus
+    expose: 
+      - 9090
+    volumes:
+      - ./prometheus/config/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    depends_on:
+      - gateway
+    networks:
+      - micoservices
+
+  grafana:
+    image: grafana/grafana
+    volumes:
+      - ./grafana/grafana.db:/var/lib/grafana/grafana.db
+    ports:
+      - "8081:8082"
+    depends_on:
+      - prometheus
+    networks:
+      - micoservices
+
+ volumes:
+  es-warm:
+    driver: local
+  es-hot:
+    driver: local
+  data:
+    driver: local
+  prometheus_data:
+    driver: local
+  grafana_data:
+    driver: local
+
+
+networks:
+  micoservices:
+    driver: bridge
