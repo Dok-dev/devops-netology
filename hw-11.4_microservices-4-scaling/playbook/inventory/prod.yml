@@ -1,0 +1,19 @@
+---
+all:
+  children:
+    VM1:
+      hosts:
+        172.17.0.2:
+          ansible_connection: ssh
+          ansible_user: root
+    VM2:
+      hosts:
+        172.17.0.3:
+          ansible_connection: ssh
+          ansible_user: root
+    VM3:
+      hosts:
+        172.17.0.4:
+          ansible_connection: ssh
+          ansible_user: root
+          

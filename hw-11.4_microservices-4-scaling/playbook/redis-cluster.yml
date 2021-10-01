@@ -1,0 +1,93 @@
+---
+- name: Install Docker
+  become: true
+  hosts: all
+  vars:
+    create_containers: 2
+    default_container_name: redis
+    default_container_image: redis
+#    docker_compose_version: "1.27.4"
+
+
+  tasks:
+
+    - name: Update apt cache
+      apt: update_cache=yes cache_valid_time=3600
+
+    - name: Upgrade all apt packages
+      apt: upgrade=dist
+
+    - name: Install dependencies
+      apt:
+        name: "{{ packages }}"
+        state: present
+        update_cache: yes
+      vars:
+        packages:
+        - apt-transport-https
+        - ca-certificates
+        - curl
+        - software-properties-common
+        - gnupg-agent
+      
+    - name: Add an apt signing key for Docker
+      apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        state: present
+
+    - name: Add apt repository for stable version
+      apt_repository:
+        repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu focal stable
+        state: present
+
+    - name: Install Docker
+      apt:
+        name: "{{ packages }}"
+        state: present
+        update_cache: yes
+      vars:
+        packages:
+        - docker-ce
+        - docker-ce-cli 
+        - containerd.io
+
+    - name: Add user to docker group
+      user:
+        name: "{{ansible_user}}"
+        group: docker
+
+#    - name: Download docker-compose {{ docker_compose_version }}
+#      get_url:
+#        url : https://github.com/docker/compose/releases/download/{{ docker_compose_version }}/docker-compose-Linux-x86_64
+#        dest: ~/docker-compose
+#        mode: '+x'
+
+#    - name: Check docker-compose exists
+#      stat: path=~/docker-compose
+#      register: docker_compose
+
+#    - name: Move docker-compose to /usr/local/bin/docker-compose
+#      command: mv ~/docker-compose /usr/local/bin/docker-compose
+#      when: docker_compose.stat.exists
+
+
+    # Creates the number of containers defined by the variable create_containers, using values from vars file
+    - name: Create default containers
+      docker_container:
+        name: "{{ default_container_name }}{{ item }}"
+        image: "{{ default_container_image }}"
+        ports:
+          - "6379:{{ 6379 + item|int }}"
+        volumes:
+          - ./files/redis.tmpl:/usr/local/etc/redis/redis.conf
+#       command: sleep 1d
+        state: present
+      with_sequence: count={{ create_containers }}
+      
+      
+      - name: Create Radis cluster
+        become: True
+        shell:
+          cmd: "redis-cli --cluster create 172.17.0.2:6379 172.17.0.4:6380 172.17.0.3:6379 172.17.0.2:6380 172.17.0.4:6379 172.17.0.3:6380 --cluster-replicas 1 --cluster-yes cluster-require-full-coverage no"
+#         chdir: /mydir
+           
