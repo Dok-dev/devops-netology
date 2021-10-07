@@ -1,4 +1,3 @@
 ---
 # defaults file for hello-world-role
-logstash_version: "7.13.2"
-minikube_home: "/opt/logstash/{{ logstash_version }}"
+

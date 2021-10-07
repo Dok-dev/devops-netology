@@ -1,14 +1,12 @@
-Logstash
+Minikube role for ansible
 =========
-
-Simple download binaries from official website and install Logstash.
 
 Role Variables
 --------------
-There is only two variables that you can redefine in your playbook.
+There is variables that you can redefine in your playbook.
 ```yaml
-logstash_version: "7.13.2"
-logstash_home: "/opt/logstash/{{ logstash_version }}"
+minikube_version: "1.23.2"
+minikube_download_dir: "{{ x_ansible_download_dir | default(ansible_env.HOME + '/.ansible/tmp/downloads') }}"
 ```
 
 Example Playbook
@@ -19,7 +17,7 @@ Including an example of how to use your role (for instance, with variables passe
 ```yaml
 - hosts: all
   roles:
-      - logstash
+      - minikube-role
 ```
 
 License
@@ -30,4 +28,4 @@ BSD
 Author Information
 ------------------
 
-Netology Students
+Timofey Biryukov

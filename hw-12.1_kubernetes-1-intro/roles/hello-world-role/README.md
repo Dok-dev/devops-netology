@@ -1,15 +1,7 @@
-Logstash
+Hello World role for minikube
 =========
 
-Simple download binaries from official website and install Logstash.
-
-Role Variables
---------------
-There is only two variables that you can redefine in your playbook.
-```yaml
-logstash_version: "7.13.2"
-logstash_home: "/opt/logstash/{{ logstash_version }}"
-```
+With role is depended from mimikube.
 
 Example Playbook
 ----------------
@@ -19,7 +11,8 @@ Including an example of how to use your role (for instance, with variables passe
 ```yaml
 - hosts: all
   roles:
-      - logstash
+      - minikube-role
+	  - hello-world-role
 ```
 
 License
