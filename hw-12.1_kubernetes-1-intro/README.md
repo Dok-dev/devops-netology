@@ -197,7 +197,7 @@
 > **Выполнение:**    
 > ```console
 > vagrant@vagrant:~$ curl http://18.184.59.79:31674
-> vagrant@vagrant:~$ Hello World!
+> Hello World!
 >```
 ## Задача 4 (*): собрать через ansible (необязательное)
 

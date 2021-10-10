@@ -55,8 +55,13 @@
     owner: root
     group: root
     mode: 'u=rwx,go=rx'
-        
+
 - name: Enable Ingress
   become: yes
   shell:
     cmd: minikube addons enable ingress
+    
+- name: Start Minikube
+  become: yes
+  shell:
+    cmd: minikube start minikube start --vm-driver=none
