@@ -248,11 +248,11 @@
 > $ kubectl get pods -n app-namespace
 > No resources found in app-namespace namespace.
 >```
-> Что и следовало ожитать т.к. ресурсы создавались в дефлтном namespace. Разворачиваем deployment в нужном namespace:
+> Что и следовало ожитать т.к. ресурсы создавались в дефолтном namespace. Разворачиваем deployment в нужном namespace:
 > ```console
 > root@ip-172-31-21-11:/tmp# kubectl delete deployment hello-node
 > deployment.apps "hello-node" deleted
-> root@ip-172-31-21-11:/tmp# kubectl create deployment hello-node --image=k8s.gcr.io/echoserver:1.4 --replicas=2 -n app-namespace
+> root@ip-172-31-21-11:/tmp# kubectl create deployment hello-node --image=hello-world --replicas=2 -n app-namespace
 > deployment.apps/hello-node created
 > root@ip-172-31-21-11:/tmp# su - vasia
 > $ kubectl get pods
