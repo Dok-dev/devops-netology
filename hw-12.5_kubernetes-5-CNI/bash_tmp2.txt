@@ -1,0 +1,21 @@
+{
+mkdir -p $HOME/.kube
+sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+sudo chown $(id -u):$(id -g) $HOME/.kube/config
+}
+
+kubectl delete pod hello-nodes-depl-7984878ddf-kjgrh --grace-period=0 --force
+kubectl get pods -A
+kubectl get nodes
+kubectl -n frontend logs -f deployment/hello-nodes-depl
+
+kubectl delete pod  --grace-period=0 --force
+
+
+sudo systemctl daemon-reload
+sudo systemctl restart kubelet
+
+# осушение ноды перед выключением
+kubectl drain node5
+# восстановление ноды
+kubectl uncordon node5

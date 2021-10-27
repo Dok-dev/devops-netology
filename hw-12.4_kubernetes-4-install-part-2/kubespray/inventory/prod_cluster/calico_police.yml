@@ -1,0 +1,15 @@
+apiVersion: crd.projectcalico.org/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-all-to-hello-world
+  namespace: frontend
+spec:
+  ingress:
+  - action: Allow
+    protocol: TCP
+    source:
+        nets:
+        - 0.0.0.0/0
+    destination:
+      ports: app-prod
+      - 8080

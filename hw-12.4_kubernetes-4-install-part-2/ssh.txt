@@ -1,0 +1,32 @@
+ubuntu@ip-10-250-233-131:~/.ssh$ ssh-keygen
+Generating public/private rsa key pair.
+Enter file in which to save the key (/home/ubuntu/.ssh/id_rsa):
+Enter passphrase (empty for no passphrase):
+Enter same passphrase again:
+Your identification has been saved in /home/ubuntu/.ssh/id_rsa.
+Your public key has been saved in /home/ubuntu/.ssh/id_rsa.pub.
+The key fingerprint is:
+SHA256:y...b0 ubuntu@ip-10-250-233-131
+The key's randomart image is:
++---[RSA 2048]----+
+| =*o+o ..*O+...  |
+|o o*  + .o=*=. . |
+|o o..  . ..=+ +  |
+| . E   ..o  +o . |
+|        S. + +   |
+|      . o + o .  |
+|       o + o .   |
+|        o . .    |
+|         .       |
++----[SHA256]-----+
+ubuntu@ip-10-250-233-131:~/.ssh$ ls
+authorized_keys aws_keypar.pem  id_rsa  id_rsa.pub  known_hosts
+
+ssh-keygen -y -f aws_keypar.pem > id_rsa.pub
+
+ubuntu@ip-10-250-233-131:~/.ssh$ cat id_rsa.pub | ssh -i aws_keypar.pem ubuntu@10.250.199.184 "mkdir -p ~/.ssh && cat >> ~/.ssh/authorized_keys"
+ubuntu@ip-10-250-233-131:~/.ssh$ ssh ubuntu@10.250.217.255
+
+
+ tar -cvf kube.tar.gz ~/kubespray
+ scp kube.tar.gz ubuntu@52.58.30.177:/home/ubuntu

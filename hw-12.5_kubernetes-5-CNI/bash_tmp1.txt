@@ -1,0 +1,97 @@
+
+ubuntu@node1:~$ kubectl create namespace frontend
+namespace/frontend created
+
+ubuntu@node1:~$ cat <<EOF | kubectl create -f -
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hello-nodes-depl
+  namespace: frontend
+  labels:
+    app: hello-world
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: hello-world
+  template:
+    metadata:
+      labels:
+        app: hello-world
+    spec:
+      containers:
+      - name: hello-node
+        image: k8s.gcr.io/echoserver:1.4
+        ports:
+        - containerPort: 8080
+EOF
+deployment.apps/hello-nodes-depl created
+
+ubuntu@node1:~$ cat <<EOF | kubectl apply -f -
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: hello-world-ingress
+  namespace: frontend
+spec:
+  selector:
+#   run: hello-node
+    app: hello-world
+  type: LoadBalancer
+  ports:
+  - port: 8080
+    targetPort: 8080
+    nodePort: 30080
+    protocol: TCP
+  externalIPs: [192.168.17.162, 192.168.17.163, 192.168.17.164, 192.168.17.165]
+EOF
+service/hello-world-ingress created
+
+ubuntu@node1:~$ cat <<EOF | calicoctl apply -f -
+---
+apiVersion: projectcalico.org/v3
+kind: GlobalNetworkPolicy
+metadata:
+  name: deny-app-policy
+spec:
+  namespaceSelector: has(projectcalico.org/name) && projectcalico.org/name not in {"kube-system", "calico-system"}
+  types:
+  - Ingress
+  - Egress
+  order: 10
+  egress:
+  # allow all namespaces to communicate to DNS pods
+  - action: Allow
+    protocol: UDP
+    destination:
+      selector: 'k8s-app == "kube-dns"'
+      ports:
+      - 53
+EOF
+Successfully applied 1 'GlobalNetworkPolicy' resource(s)
+
+
+cat <<EOF | calicoctl apply -f -
+---
+apiVersion: projectcalico.org/v3
+kind: GlobalNetworkPolicy
+metadata:
+  name: hello-world-srv-in
+spec:
+  selector: k8s-role == 'node'
+  types:
+  - Ingress
+  applyOnForward: true
+  preDNAT: true
+  ingress:
+  - action: Allow
+    destination:
+      nets:
+      - 10.233.52.126/32
+EOF
+
+
+kubectl patch svc  -p '{"spec": {"ports": [{"port": 8080,"targetPort": 8080,"name": "hello-world"},{"port": 80,"targetPort": 80,"name": "hello-world"}],"type": "LoadBalancer"}}' -n app-prod
