@@ -13,6 +13,7 @@
 3. При создании tasks рекомендую использовать модули: `get_url`, `template`, `unarchive`, `file`.
 4. Tasks должны: скачать нужной версии дистрибутив, выполнить распаковку в выбранную директорию, сгенерировать конфигурацию с параметрами.
 5. Запустите `ansible-lint site.yml` и исправьте ошибки, если они есть.
+
     >**Выполнение:**   
 ```
 vagrant@vagrant:/mnt/prime/hw-08.2_Ansible-2-playbook/playbook$ ansible-lint
@@ -51,6 +52,7 @@ vagrant@vagrant:/mnt/prime/hw-08.2_Ansible-2-playbook/playbook$
 ```
 
 6. Попробуйте запустить playbook на этом окружении с флагом `--check`.
+
     >**Выполнение:**   
 ```
 agrant@vagrant:/mnt/prime/hw-08.2_Ansible-2-playbook/playbook$ ansible-playbook site.yml -i inventory/prod.yml --check

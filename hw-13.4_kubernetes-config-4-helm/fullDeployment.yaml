@@ -1,0 +1,153 @@
+---
+# Source: netology1/templates/services/backend.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: production
+  name: backend
+spec:
+  selector:
+    app: backend
+  ports:
+    - protocol: TCP
+      port: 9000
+      targetPort: 9000
+---
+# Source: netology1/templates/services/frontend.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: production
+  name: frontend
+spec:
+  selector:
+    app: frontend
+  ports:
+    - name: web
+      protocol: TCP
+      port: 80
+      targetPort: 80
+---
+# Source: netology1/templates/services/statefulset.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: production
+  name: db
+spec:
+  selector:
+    app: db
+  ports:
+    - protocol: TCP
+      port: 5432
+      targetPort: 5432
+---
+# Source: netology1/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: production
+  name: backend
+  labels:
+    app: backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      containers:
+        - name: backend
+          image: "0dok0/kubernetes-config_backend:latest"
+          ports:
+          - containerPort: 9000
+            protocol: TCP
+          env:
+            - name: DATABASE_URL
+              value: postgres://postgres:postgres@db:5432/news
+---
+# Source: netology1/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: production
+  name: frontend
+  labels:
+    app: frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: frontend
+  template:
+    metadata:
+      labels:
+        app: frontend
+    spec:
+      containers:
+        - name: frontend
+          image: "0dok0/kubernetes-config_frontend:latest"
+          ports:
+          - containerPort: 80
+            protocol: TCP
+          env:
+            - name: BASE_URL
+              value: http://backend:9000
+---
+# Source: netology1/templates/statefulset.yaml
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  namespace: production
+  name: db
+spec:
+  selector:
+    matchLabels:
+      app: db
+  serviceName: db
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: db
+    spec:
+      terminationGracePeriodSeconds: 10
+      containers:
+      - name: db
+        image: postgres:13-alpine
+        ports:
+        - containerPort: 5432
+        env:
+          - name: POSTGRES_PASSWORD
+            value: postgres
+        
+          - name: POSTGRES_USER
+            value: postgres
+        
+          - name: POSTGRES_DB
+            value: news
+---
+# Source: netology1/templates/tests/test-connection.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "RELEASE-NAME-netology1-test-connection"
+  labels:
+    helm.sh/chart: netology1-0.1.0
+    app.kubernetes.io/name: netology1
+    app.kubernetes.io/instance: RELEASE-NAME
+    app.kubernetes.io/version: "0.9.0"
+    app.kubernetes.io/managed-by: Helm
+  annotations:
+    "helm.sh/hook": test
+spec:
+  containers:
+    - name: wget
+      image: busybox
+      command: ['wget']
+      args: ['frontend:80']
+  restartPolicy: Never

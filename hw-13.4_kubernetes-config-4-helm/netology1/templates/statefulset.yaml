@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  namespace: {{.Values.namespace}}
+  name: {{ .Values.statefulset.name }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ .Values.statefulset.name }}
+  serviceName: {{ .Values.statefulset.name }}
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.statefulset.name }}
+    spec:
+      terminationGracePeriodSeconds: 10
+      containers:
+      - name: {{ .Values.statefulset.name }}
+        image: {{ .Values.statefulset.image.repository }}:{{ .Values.statefulset.image.tag }}
+        ports:
+        - containerPort: {{ .Values.statefulset.ports.containerPort }}
+        env:
+        {{- range .Values.statefulset.env }}
+          - name: {{ .name }}
+            value: {{ .value }}
+        {{ end }}

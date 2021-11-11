@@ -1,0 +1,25 @@
+# генерируем пару ключей
+ssh-keygen
+
+# подкидываем бубличный ключ на ноды
+ssh-copy-id ubuntu@192.168.17.150
+ssh-copy-id ubuntu@192.168.17.151
+
+# установка kubectl
+curl -LO https://storage.googleapis.com/kubernetes-release/release/`curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt`/bin/linux/amd64/kubectl
+chmod +x ./kubectl
+sudo mv ./kubectl /usr/local/bin/kubectl
+
+# скопировать настройки кластера юзеру
+{
+mkdir -p $HOME/.kube
+sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+sudo chown $(id -u):$(id -g) $HOME/.kube/config
+}
+
+# автозавершение
+sudo apt install bash-completion
+kubectl completion bash > ~/.kube/completion.bash.inc
+printf "\n# Kubectl shell completion\nsource '$HOME/.kube/completion.bash.inc'\n" >> $HOME/.bashrc
+source $HOME/.bashrc
+

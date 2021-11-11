@@ -1,0 +1,156 @@
+    ---
+    kind: PersistentVolumeClaim
+    apiVersion: v1
+    metadata:
+      name: nfs-volume
+    spec:
+      storageClassName: "nfs"
+      accessModes:
+        - ReadWriteOnce
+      resources:
+        requests:
+          storage: 100Mi
+
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend-backend-dpl
+  namespace: stage
+  labels:
+    app: coolapp
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: coolapp
+  template:
+    metadata:
+      labels:
+        app: coolapp
+    spec:
+      containers:
+      - name: frontend
+        image: 0dok0/kubernetes-config_backend
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - mountPath: /static
+          name: static-vl
+      - name: backend
+        image: 0dok0/kubernetes-config_frontend
+        ports:
+        - containerPort: 9000
+        volumeMounts:
+        - mountPath: /static
+          name: static-vl
+          
+      volumes:
+      - name: static-vl
+        emptyDir: {}
+        
+
+# kubectl get pods -n stage -o wide
+# kubectl exec frontend-backend-dpl-649589bfc6-r87z9 -n stage -c frontend -- touch /static/test.txt
+# kubectl exec frontend-backend-dpl-649589bfc6-r87z9 -n stage -c backend -- ls -la /static
+# kubectl delete deployments.apps backend-dpl frontend-dpl -n production
+# sudo apt install nfs-common #на всех нодах
+
+---
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: nfs
+provisioner: cluster.local/nfs-server-nfs-server-provisioner
+parameters:
+  server: node1.cluster.local
+  path: /share
+  readOnly: "false"
+
+# cat <<EOF | kubectl create -f -
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pvc-front-back
+  namespace: production
+spec:
+  storageClassName: nfs
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Gi
+# EOF
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-dpl
+  namespace: production
+  labels:
+    app: backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      containers:
+      - name: backend
+        image: 0dok0/kubernetes-config_backend
+        ports:
+        - containerPort: 9000
+        env:
+          - name: DATABASE_URL
+            value: postgres://postgres:postgres@db-srv:5432/news
+        volumeMounts:
+          - mountPath: "/dynamic"
+            name: pvc-front-back-volume
+      volumes:
+       - name: pvc-front-back-volume
+         persistentVolumeClaim:
+           claimName: pvc-front-back
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend-dpl
+  namespace: production
+  labels:
+    app: frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: frontend
+  template:
+    metadata:
+      labels:
+        app: frontend
+    spec:
+      containers:
+      - name: frontend
+        image: 0dok0/kubernetes-config_frontend
+        ports:
+        - containerPort: 80
+        env:
+          - name: BASE_URL
+            value: http://backend:9000
+        volumeMounts:
+          - mountPath: "/dynamic"
+            name: pvc-front-back-volume
+      volumes:
+       - name: pvc-front-back-volume
+         persistentVolumeClaim:
+           claimName: pvc-front-back
+           
+# kubectl exec backend-dpl-5759c5846c-h5qgs -n production -c backend -- touch /dynamic/test2.txt
+# kubectl exec frontend-dpl-594578b58d-wp2vk -n production -c frontend -- ls -la /dynamic

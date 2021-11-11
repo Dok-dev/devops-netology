@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "{{ include "netology1.fullname" . }}-test-connection"
+  labels:
+    {{- include "netology1.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/hook": test
+spec:
+  containers:
+    - name: wget
+      image: busybox
+      command: ['wget']
+      args: ['{{ .Values.deployment.frontend.name }}:{{ .Values.deployment.frontend.service.port }}']
+  restartPolicy: Never

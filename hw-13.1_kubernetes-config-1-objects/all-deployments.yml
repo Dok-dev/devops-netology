@@ -1,0 +1,237 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend-backend-dpl
+  namespace: stage
+  labels:
+    app: coolapp
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: coolapp
+  template:
+    metadata:
+      labels:
+        app: coolapp
+    spec:
+      containers:
+      - name: frontend
+        image: 0dok0/kubernetes-config_backend
+        ports:
+        - containerPort: 80
+      - name: backend
+        image: 0dok0/kubernetes-config_frontend
+        ports:
+        - containerPort: 9000
+
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: db-dpl
+  namespace: stage
+spec:
+  selector:
+    matchLabels:
+      app: db
+  serviceName: "db"
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: db
+    spec:
+      terminationGracePeriodSeconds: 10
+      containers:
+      - name: db
+        image: postgres:13-alpine
+        ports:
+        - containerPort: 5432
+        env:
+          - name: POSTGRES_PASSWORD
+            value: postgres
+          - name: POSTGRES_USER
+            value: postgres
+          - name: POSTGRES_DB
+            value: news
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: coolapp-db
+  namespace: stage
+spec:
+  selector:
+    app: coolapp-db
+  ports:
+  - port: 5432
+    targetPort: 5432
+    protocol: TCP  
+
+
+##############################
+
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: db-dpl
+  namespace: production
+spec:
+  selector:
+    matchLabels:
+      app: db
+  serviceName: "db-srv"
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: db
+    spec:
+      terminationGracePeriodSeconds: 10
+      containers:
+      - name: db
+        image: postgres:13-alpine
+        ports:
+        - containerPort: 5432
+        env:
+          - name: POSTGRES_PASSWORD
+            value: postgres
+          - name: POSTGRES_USER
+            value: postgres
+          - name: POSTGRES_DB
+            value: news
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: db
+  namespace: production
+spec:
+  selector:
+    app: db
+  ports:
+    - protocol: TCP
+      port: 5432
+      targetPort: 5432            
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-dpl
+  namespace: production
+  labels:
+    app: backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      containers:
+      - name: backend
+        image: 0dok0/kubernetes-config_backend
+        ports:
+        - containerPort: 9000
+        env:
+          - name: DATABASE_URL
+            value: postgres://postgres:postgres@db:5432/news
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend
+  namespace: production
+spec:
+  selector:
+    app: backend
+  ports:
+    - protocol: TCP
+      port: 9000
+      targetPort: 9000
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend-dpl
+  namespace: production
+  labels:
+    app: frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: frontend
+  template:
+    metadata:
+      labels:
+        app: frontend
+    spec:
+      containers:
+      - name: frontend
+        image: 0dok0/kubernetes-config_frontend
+        ports:
+        - containerPort: 80
+        env:
+          - name: BASE_URL
+            value: http://backend:9000
+            
+cat <<EOF | kubectl create -f -
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend
+  namespace: production
+spec:
+  selector:
+    app: frontend
+  ports:
+    - name: web
+      protocol: TCP
+      port: 8000
+      targetPort: 80
+EOF
+#############################
+
+cat <<EOF | kubectl apply -f -
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend-srv
+  namespace: production
+spec:
+  selector:
+    app: frontend
+  ports:
+    - name: web
+      protocol: TCP
+      port: 8000
+      targetPort: 80
+      
+cat <<EOF | kubectl apply -f -
+---
+apiVersion: v1
+kind: Endpoints
+metadata:
+  name: frontend-srv
+  namespace: production
+subsets: 
+  - addresses:
+      - ip: 213.180.193.58
+    ports:
+      - port: 80
+        name: web
+EOF

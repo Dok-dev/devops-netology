@@ -31,6 +31,7 @@ vagrant@vagrant:~/.ssh$ cat git_rsa.pub       # to add on https://github.com/set
        version: "1.0.1"
        name: java 
    ```
+   
 2. При помощи `ansible-galaxy` скачать себе эту роль. Запустите  `molecule test`, посмотрите на вывод команды.
     >**Выполнение:**   
 ```
@@ -47,9 +48,11 @@ vagrant@vagrant:~/.ansible/roles/java$ sudo pip3 install molecule-docker
 
 vagrant@vagrant:~/.ansible/roles/java$ sudo molecule test -s default
 ```
+
 3. Перейдите в каталог с ролью elastic-role и создайте сценарий тестирования по умолчаню при помощи `molecule init scenario --driver-name docker`.
 4. Добавьте несколько разных дистрибутивов (centos:8, ubuntu:latest) для инстансов и протестируйте роль, исправьте найденные ошибки, если они есть.
 5. Создайте новый каталог с ролью при помощи `molecule init role --driver-name docker kibana-role`. Можете использовать другой драйвер, который более удобен вам.
+
     >**Выполнение:**   
 ```
 vagrant@vagrant:/mnt/devops/roles$ molecule init role --driver-name docker kibana-role
@@ -58,6 +61,7 @@ No config file found; using defaults
 - Role kibana-role was created successfully
 INFO     Initialized role in /mnt/devops/roles/kibana-role successfully.
 ```
+
 6. На основе tasks из старого playbook заполните новую role. Разнесите переменные между `vars` и `default`. Проведите тестирование на разных дистрибитивах (centos:7, centos:8, ubuntu).
 7. Выложите все roles в репозитории. Проставьте тэги, используя семантическую нумерацию.
 8. Добавьте roles в `requirements.yml` в playbook.

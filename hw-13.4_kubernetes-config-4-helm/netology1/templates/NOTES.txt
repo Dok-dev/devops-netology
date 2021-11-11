@@ -1,0 +1,3 @@
+---------------------------------------------------------
+Project {{ include "netology1.fullname" . }} deployed to {{ .Values.namespace }} namespace.
+---------------------------------------------------------
