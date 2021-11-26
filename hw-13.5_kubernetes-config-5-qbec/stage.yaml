@@ -1,0 +1,153 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    qbec.io/component: backend
+  labels:
+    qbec.io/application: netology3
+    qbec.io/environment: stage
+  name: backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      containers:
+      - env:
+        - name: DATABASE_URL
+          value: postgres://postgres:postgres@db:5432/news
+        image: 0dok0/kubernetes-config_backend:latest
+        imagePullPolicy: IfNotPresent
+        name: backend
+        ports:
+        - containerPort: 9000
+          protocol: TCP
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    qbec.io/component: backend
+  labels:
+    qbec.io/application: netology3
+    qbec.io/environment: stage
+  name: backend
+spec:
+  ports:
+  - port: 9000
+    protocol: TCP
+    targetPort: 9000
+  selector:
+    app: backend
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    qbec.io/component: db
+  labels:
+    qbec.io/application: netology3
+    qbec.io/environment: stage
+  name: db
+spec:
+  ports:
+  - port: 5432
+    protocol: TCP
+    targetPort: 5432
+  selector:
+    app: db
+
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  annotations:
+    qbec.io/component: db
+  labels:
+    qbec.io/application: netology3
+    qbec.io/environment: stage
+  name: db
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: db
+  serviceName: db
+  template:
+    metadata:
+      labels:
+        app: db
+    spec:
+      containers:
+      - env:
+        - name: POSTGRES_PASSWORD
+          value: postgres
+        - name: POSTGRES_USER
+          value: postgres
+        - name: POSTGRES_DB
+          value: news
+        image: postgres:13-alpine
+        imagePullPolicy: IfNotPresent
+        name: db
+        ports:
+        - containerPort: 5432
+      terminationGracePeriodSeconds: 10
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    qbec.io/component: frontend
+  labels:
+    qbec.io/application: netology3
+    qbec.io/environment: stage
+  name: frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: frontend
+  template:
+    metadata:
+      labels:
+        app: frontend
+    spec:
+      containers:
+      - env:
+        - name: BASE_URL
+          value: http://backend:9000
+        image: 0dok0/kubernetes-config_frontend:latest
+        imagePullPolicy: IfNotPresent
+        name: frontend
+        ports:
+        - containerPort: 80
+          protocol: TCP
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    qbec.io/component: frontend
+  labels:
+    qbec.io/application: netology3
+    qbec.io/environment: stage
+  name: frontend
+spec:
+  ports:
+  - name: web
+    port: 80
+    protocol: TCP
+    targetPort: 80
+  selector:
+    app: frontend
+
