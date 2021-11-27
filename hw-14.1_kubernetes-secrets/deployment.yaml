@@ -1,0 +1,52 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-dpl
+  namespace: stage
+  labels:
+    app: coolapp
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: coolapp
+  template:
+    metadata:
+      labels:
+        app: coolapp
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:stable-alpine
+        ports:
+        - containerPort: 80
+          protocol: TCP
+        - containerPort: 443
+          protocol: TCP
+        volumeMounts:
+        - name: certs
+          mountPath: "/etc/nginx/ssl"
+          readOnly: true
+        - name: config
+          mountPath: "/etc/nginx/conf.d"
+          readOnly: true
+        env:
+          - name: SECRET_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: usercred
+                key: user
+          - name: SECRET_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: usercred
+                key: password
+
+      volumes:
+      - name: certs
+        secret:
+          secretName: domain-cert
+      - name: config
+        configMap:
+          name: nginx-config

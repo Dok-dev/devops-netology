@@ -1,3 +1,4 @@
+[
 local namespace = "production";
 
 local backend_name = "backend";
@@ -44,7 +45,7 @@ local db_image = "postgres:13-alpine";
              "env": [
                 {
                    "name": "DATABASE_URL",
-                   "value": "postgres://postgres:postgres@db:" + db_port + "/news"
+                   "value": "postgres://postgres:postgres@" + db_name + ":" + db_port + "/news"
                 }
              ]
           }
@@ -52,7 +53,7 @@ local db_image = "postgres:13-alpine";
       }
     }
   }
-}
+},
 
 {
   "apiVersion": "v1",
@@ -73,7 +74,7 @@ local db_image = "postgres:13-alpine";
       }
     ]
   }
-}
+},
 
 {
   "apiVersion": "apps/v1",
@@ -112,7 +113,7 @@ local db_image = "postgres:13-alpine";
       }
     }
   }
-}
+},
 
 {
   "apiVersion": "v1",
@@ -134,7 +135,7 @@ local db_image = "postgres:13-alpine";
       }
     ]
   }
-}
+},
 
 {
    "apiVersion": "apps/v1",
@@ -187,4 +188,27 @@ local db_image = "postgres:13-alpine";
          }
       }
    }
+},
+
+{
+  "apiVersion": "v1",
+  "kind": "Service",
+  "metadata": {
+    "name": db_name,
+    "namespace": "production"
+  },
+  "spec": {
+    "selector": {
+      "app": db_name
+    },
+    "ports": [
+      {
+        "protocol": "TCP",
+        "port": db_port,
+        "targetPort": db_port
+      }
+    ]
+  }
 }
+
+]
