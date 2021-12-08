@@ -1,0 +1,22 @@
+# Non TLS Version for learning only, do not use in production mode
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: vault-config
+data:
+  vault.hcl: |
+    disable_mlock = true
+    ui = true
+    api_addr = "http://vault:8200"
+
+    listener "tcp" {
+      address = "127.0.0.1:8200"
+      tls_disable = 1
+      #tls_cert_file = "/vault/userconfig/tls-server/server.crt"
+      #tls_key_file = "/vault/userconfig/tls-server/server.key"
+      #tls_ca_cert_file = "/vault/userconfig/tls-ca/ca.crt"
+    }
+    storage "file" {
+      path = "/vault/data"
+    }

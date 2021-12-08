@@ -1,0 +1,62 @@
+# Non TLS Version for learning only, do not use in production mode
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: vault
+  labels:
+    app: vault
+spec:
+  serviceName: "vault"
+  selector:
+    matchLabels:
+      app: vault
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: vault
+    spec:
+      containers:
+        - name: vault
+          image: vault:1.9.0
+          imagePullPolicy: IfNotPresent
+          args:
+            - "server"
+            - "-config=/etc/vault/config/vault.hcl"
+          ports:
+            - name: http
+              containerPort: 8200
+              protocol: "TCP"
+          env:
+            # Для нахождения Vault при работе из exec в поде
+            - name: VAULT_ADDR
+              value: "http://127.0.0.1:8200"
+          resources:
+            requests:
+              cpu: "500m"
+              memory: "1Gi"
+          securityContext:
+            capabilities:
+              add:
+                - IPC_LOCK
+                - CAP_SETFCAP
+          volumeMounts:
+            - name: config
+              mountPath: /etc/vault/config
+            - name: vault-data
+              mountPath: /vault/data
+      volumes:
+        - name: config
+          configMap:
+            name: vault-config
+
+  volumeClaimTemplates:
+    - metadata:
+        name: vault-data
+      spec:
+        accessModes: [ "ReadWriteOnce" ]
+        storageClassName: nfs
+        resources:
+          requests:
+            storage: 1Gi
