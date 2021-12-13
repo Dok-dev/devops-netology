@@ -87,7 +87,7 @@ uid=1000 gid=3000 groups=3000
 > ...
 > ```
 >
-> Применяем [политику для backend](deployment-backend.yml) и [политику для frontend](frontend-network-policy.yml) подов:
+> Применяем [политику для backend](backend-network-policy.yml) и [политику для frontend](frontend-network-policy.yml) подов:
 > ```console
 > vagrant@vagrant:~/14.5$ kubectl apply -f backend-network-policy.yml
 > networkpolicy.networking.k8s.io/allow-dns-access created
