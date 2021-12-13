@@ -1,0 +1,46 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-dpl
+  namespace: production
+  labels:
+    app: backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      containers:
+      - name: backend
+        image: 0dok0/kubernetes-config_backend
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 9000
+        securityContext:
+          runAsUser: 1001
+          runAsGroup: 3000
+          runAsNonRoot: true
+        env:
+          - name: DATABASE_URL
+            value: postgres://postgres:postgres@db:5432/news
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend
+  namespace: production
+spec:
+  selector:
+    app: backend
+  ports:
+    - protocol: TCP
+      port: 9000
+      targetPort: 9000
+

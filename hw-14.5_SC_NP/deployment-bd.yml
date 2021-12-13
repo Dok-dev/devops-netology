@@ -1,0 +1,44 @@
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: db-dpl
+  namespace: production
+spec:
+  selector:
+    matchLabels:
+      app: db
+  serviceName: "db-srv"
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: db
+    spec:
+      terminationGracePeriodSeconds: 10
+      containers:
+      - name: db
+        image: postgres:13-alpine
+        ports:
+        - containerPort: 5432
+        env:
+          - name: POSTGRES_PASSWORD
+            value: postgres
+          - name: POSTGRES_USER
+            value: postgres
+          - name: POSTGRES_DB
+            value: news
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: db
+  namespace: production
+spec:
+  selector:
+    app: db
+  ports:
+    - protocol: TCP
+      port: 5432
+      targetPort: 5432            

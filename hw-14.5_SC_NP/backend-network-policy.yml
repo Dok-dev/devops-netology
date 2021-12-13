@@ -1,0 +1,59 @@
+---
+# First allow communicate to DNS pods
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-dns-access
+  namespace: production
+spec:
+  podSelector:
+    matchLabels: {}
+  policyTypes:
+  - Egress
+  egress:
+  - to:
+  # Как выяснилось без "cidr: 0.0.0.0/0" нифига не работает, т.к. неймсервер в поде может быть например "169.254.25.10" (cat /etc/resolv.conf)
+    - ipBlock:
+        cidr: 0.0.0.0/0
+    - namespaceSelector:
+        matchLabels:
+          name: kube-system
+    ports:
+    - protocol: UDP
+      port: 53
+      
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: backend-network-policy
+  namespace: production
+spec:
+  podSelector:
+    matchLabels:
+      app: backend
+  policyTypes:
+  - Ingress
+  - Egress
+  ingress:
+  - from:
+    - namespaceSelector:
+        matchLabels:
+           project: myproject
+    - podSelector:
+        matchLabels:
+          app: frontend
+    ports:
+    - protocol: TCP
+      port: 9000
+  egress:
+  - to:
+    - namespaceSelector:
+        matchLabels:
+           project: myproject
+    - podSelector:
+        matchLabels:
+          app: frontend
+    ports:
+    - protocol: TCP
+      port: 80
