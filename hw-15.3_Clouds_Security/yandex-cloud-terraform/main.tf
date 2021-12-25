@@ -62,7 +62,6 @@ resource "yandex_compute_instance" "nat-vm" {
 
   metadata = {
     ssh-keys = "ubuntu:${file("~/.ssh/id_rsa.pub")}"
-    # user-data = "${file("meta.txt")}"
   }
 }
 
@@ -90,7 +89,7 @@ resource "yandex_compute_instance" "vm-pub" {
 
   network_interface {
     subnet_id  = yandex_vpc_subnet.public.id
-    nat        = true # Provide a public address, for instance, to access the internet over NAT
+    nat        = true
   }
 
   metadata = {

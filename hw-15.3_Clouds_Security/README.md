@@ -23,31 +23,6 @@
 - [Compute instance group](https://registry.terraform.io/providers/yandex-cloud/yandex/latest/docs/resources/compute_instance_group)
 - [Network Load Balancer](https://registry.terraform.io/providers/yandex-cloud/yandex/latest/docs/resources/lb_network_load_balancer)
 - [Группа ВМ с сетевым балансировщиком](https://cloud.yandex.ru/docs/compute/operations/instance-groups/create-with-balancer)
-
-
-> **Выполнение:**    
-> 
-> Получились следующие блоки:    
-> [Конфигурация Terraform](yandex-cloud-terraform/main.tf) с блоками задания.    
-> [Конфигурация Terraform](yandex-cloud-terraform/network.tf) для сети.
->
-> Полученные ресурсы после применения (на скриншотах только WebUI наиболее важные):    
-> ![ya_resources](img/ya_resources.png)    
-> ![ya_dashboard](img/ya_dashboard.png)    
-> ![ya_bucket](img/ya_bucket.png)    
-> ![ya_group](img/ya_group1.png)    
-> ![ya_instances](img/ya_instances.png)    
-> ![ya_lb](img/ya_lb.png)    
-> 
-> Проверяем работу на балансировщике:    
-> ![ya_check](img/ya_lb_check.png)   
->
-> Application load balancer из тераформа получился кривой, с одной зоной доступности. И как добавить вторую непонятно. Документация очень слабая и сырая. Из WebUI получилось нормально. С "output" вообще беда в обоих случаях, не реализован даже вывод выдавемого ip. 
->
-> ```console
-> vagrant@vagrant:~/yandex-cloud-terraform$ terraform destroy
-> ```
-
 ---
 ## Задание 2*. AWS (необязательное к выполнению)
 
@@ -106,8 +81,6 @@ echo "<html><h1>My cool web-server</h1></html>" > index.html
 
 ***Использованные материалы***
 
-https://cloud.yandex.ru/docs/compute/concepts/vm-metadata#keys-processed-in-public-images    
-https://cloud.yandex.com/en/docs/iam/concepts/access-control/roles    
 https://docs.aws.amazon.com/AmazonS3/latest/userguide/bucketnamingrules.html    
 https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_object    
 https://hands-on.cloud/terraform-recipe-managing-auto-scaling-groups-and-load-balancers/    

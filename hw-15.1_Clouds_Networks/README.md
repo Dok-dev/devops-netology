@@ -157,6 +157,7 @@ Resource terraform
 
 ***Использованные материалы***
 
+https://cloud.yandex.ru/docs/iam/concepts/authorization/oauth-token    
 https://cloud.yandex.ru/docs/solutions/infrastructure-management/terraform-quickstart#configure-terraform    
 https://cloud.yandex.ru/docs/solutions/routing/nat-instance    
 https://www.ibm.com/docs/en/qsip/7.3.2?topic=applications-icmp-type-code-ids    
