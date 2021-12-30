@@ -7,142 +7,70 @@ terraform {
   }
 }
 
-provider "yandex" {
-  cloud_id  = "b1gpm33d7a0h72fo204t"
+locals {
   folder_id = "b1gru9vkkhtb29co4kh5"
+  cloud_id  = "b1gpm33d7a0h72fo204t"
+}
+
+provider "yandex" {
+  cloud_id  = local.cloud_id
+  folder_id = local.folder_id
   zone      = "ru-central1-a"
 }
 
+/*-------------------1. KMS encryption for bucket object --------------------*/
 
-resource "yandex_vpc_network" "vpc-1" {
-  name = "vpc-network1"
+// Create SA
+resource "yandex_iam_service_account" "sa" {
+  folder_id = local.folder_id
+  name      = "tf-editor-account"
 }
 
-resource "yandex_vpc_subnet" "public" {
-  name           = "public"
-  zone           = "ru-central1-a"
-  network_id     = yandex_vpc_network.vpc-1.id
-  v4_cidr_blocks = ["192.168.10.0/24"]
+// Grant permissions
+resource "yandex_resourcemanager_folder_iam_member" "sa-edit1" {
+  folder_id = local.folder_id
+  role      = "editor" # Permission make ability to create, edit and delete any objects
+  member    = "serviceAccount:${yandex_iam_service_account.sa.id}"
 }
 
-resource "yandex_vpc_subnet" "private" {
-  name           = "private"
-  zone           = "ru-central1-a"
-  network_id     = yandex_vpc_network.vpc-1.id
-  v4_cidr_blocks = ["192.168.20.0/24"]
-  route_table_id = yandex_vpc_route_table.vpc-1-rt.id
+// Create Static Access Keys
+resource "yandex_iam_service_account_static_access_key" "sa-static-key" {
+  service_account_id = yandex_iam_service_account.sa.id
+  description        = "static access key for object storage"
 }
 
-resource "yandex_compute_instance" "nat-vm" {
-  name        = "nat-instance"
-  platform_id = "standard-v1"
-  zone        = "ru-central1-a"
+// Create KMS key
+resource "yandex_kms_symmetric_key" "key-a" {
+  name              = "symetric-key"
+  description       = "encryption for bucket"
+  default_algorithm = "AES_128"
+  rotation_period   = "8760h" // equal to 1 year
+}
 
-  resources {
-    cores  = 2
-	core_fraction = 20
-    memory = 2
-  }
+// Use keys to create bucket
+resource "yandex_storage_bucket" "bucket1" {
+  access_key = yandex_iam_service_account_static_access_key.sa-static-key.access_key
+  secret_key = yandex_iam_service_account_static_access_key.sa-static-key.secret_key
+  bucket = "android-jones-paintings"
+  # acl    = "public-read"
 
-  scheduling_policy {
-    preemptible = true
-  }
-
-  boot_disk {
-    initialize_params {
-      image_id = "fd80mrhj8fl2oe87o4e1"
+  server_side_encryption_configuration {
+    rule {
+      apply_server_side_encryption_by_default {
+        kms_master_key_id = yandex_kms_symmetric_key.key-a.id
+        sse_algorithm     = "aws:kms"
+      }
     }
   }
-
-  network_interface {
-    subnet_id = yandex_vpc_subnet.public.id
-    ip_address = "192.168.10.254"
-    nat       = true
-  }
-
-  metadata = {
-    ssh-keys = "ubuntu:${file("~/.ssh/id_rsa.pub")}"
-  }
 }
 
-resource "yandex_compute_instance" "vm-pub" {
-  name        = "pub-instance"
-  platform_id = "standard-v1"
-  zone        = "ru-central1-a"
-
-  resources {
-    cores  = 2
-	core_fraction = 20
-    memory = 2
-
-  }
-
-  scheduling_policy {
-    preemptible = true
-  }
-
-  boot_disk {
-    initialize_params {
-      image_id = "fd8l9qf9lsih4f772meq"
-    }
-  }
-
-  network_interface {
-    subnet_id  = yandex_vpc_subnet.public.id
-    nat        = true
-  }
-
-  metadata = {
-    ssh-keys = "ubuntu:${file("~/.ssh/id_rsa.pub")}"
-  }
-}
-
-resource "yandex_vpc_route_table" "vpc-1-rt" {
-  name = "nat-gateway"
-  network_id = yandex_vpc_network.vpc-1.id
-
-  static_route {
-    destination_prefix = "0.0.0.0/0"
-    next_hop_address   = yandex_compute_instance.nat-vm.network_interface.0.ip_address
-  }
-}
-
-resource "yandex_compute_instance" "vm-private" {
-  name        = "private-instance"
-  platform_id = "standard-v1"
-  zone        = "ru-central1-a"
-
-  resources {
-    cores  = 2
-	core_fraction = 20
-    memory = 2
-  }
-
-  scheduling_policy {
-    preemptible = true
-  }
-
-  boot_disk {
-    initialize_params {
-      image_id = "fd8l9qf9lsih4f772meq"
-    }
-  }
-
-  network_interface {
-    subnet_id = yandex_vpc_subnet.private.id
-    nat       = false
-  }
-
-  metadata = {
-    ssh-keys = "ubuntu:${file("~/.ssh/id_rsa.pub")}"
-  }
-}
-
-output "internal_ip_address_nat-vm" {
-  value = yandex_compute_instance.nat-vm.network_interface.0.ip_address
-}
-
-output "external_ip_address_vm-pub" {
-  value = yandex_compute_instance.vm-pub.network_interface.0.nat_ip_address
+// Upload file to bucket
+resource "yandex_storage_object" "picture1" {
+  access_key = yandex_iam_service_account_static_access_key.sa-static-key.access_key
+  secret_key = yandex_iam_service_account_static_access_key.sa-static-key.secret_key
+  bucket = yandex_storage_bucket.bucket1.id
+  key    = "harmony.jpg"
+  source = "~/img/harmony.jpg"
+  acl    = "public-read"
 }
 
