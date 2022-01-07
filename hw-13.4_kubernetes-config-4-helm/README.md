@@ -116,3 +116,12 @@
 https://habr.com/ru/post/548720/    
 https://itnext.io/helm-reusable-chart-named-templates-and-a-generic-chart-for-multiple-applications-13d9b26e9244    
 https://medium.com/kapitan-blog/kubernetes-with-jsonnet-and-kapitan-5e3991d5bca
+
+---
+
+Андрей Копылов (преподаватель)
+7 ноября 2021 23:25
+
+Добрый день!
+
+Зачтено

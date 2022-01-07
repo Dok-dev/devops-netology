@@ -288,3 +288,23 @@ https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-accou
 https://habr.com/ru/company/flant/blog/468679/    
 https://mcs.mail.ru/blog/kak-predostavit-dostup-k-kubernetes    
 https://habr.com/ru/company/flant/blog/470503/    
+
+---
+
+Андрей Копылов (преподаватель)
+11 октября 2021 09:57
+
+Добрый день!
+
+Отлично выполненное ДЗ. Забираю в копилку эталонных решений.
+
+Одно замечание:
+Старайтесь избегать работы под пользователем root. Для того чтобы kubectl работал из под обычного пользователя достаточно выполнить команды:
+```bash
+# Копируем конфиг в домашнюю папку пользователя для управления кластером 
+{
+    mkdir -p $HOME/.kube
+    sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+    sudo chown $(id -u):$(id -g) $HOME/.kube/config
+}
+```

@@ -531,3 +531,14 @@ terraform workspace new stage
 terraform workspace new prod
 terraform workspace select prod
 ```
+
+---
+
+Андрей Борю (преподаватель)
+3 июня 2021 17:14
+
+Здравствуйте, Тимофей!
+
+Спасибо, что разобрались с основами работы с терраформом.
+
+Присылайте следующие задания, до встречи!

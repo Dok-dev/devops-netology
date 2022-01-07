@@ -103,7 +103,7 @@ resource "yandex_compute_instance_group" "group-web" {
     }
 
     scheduling_policy {
-      preemptible = true
+      preemptible = true # Прерываемый инстанс
     }
 
     network_interface {

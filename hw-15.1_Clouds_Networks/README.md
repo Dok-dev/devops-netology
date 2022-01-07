@@ -164,3 +164,13 @@ https://www.ibm.com/docs/en/qsip/7.3.2?topic=applications-icmp-type-code-ids
 https://www.iana.org/assignments/icmp-parameters/icmp-parameters.xhtml    
 https://www.globaldots.com/resources/blog/aws-nat-gateway-and-high-availability-nat-instances-with-auto-scaling/    
 https://docs.aws.amazon.com/vpc/latest/userguide/vpc-nat-gateway.html#nat-gateway-creating    
+
+---
+
+Денис Альмухаметов (преподаватель)
+21 декабря 2021 19:59
+
+Добрый день
+
+Все отлично! Отдельный респект за AWS!
+Успехов в дальнейших работах!

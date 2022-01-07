@@ -228,3 +228,20 @@ docker network ls
 docker network inspect node_net
 ```
 
+---
+
+**Использованные материалы:**
+
+https://docs.docker.com/engine/reference/builder/#understand-how-cmd-and-entrypoint-interact
+
+---
+
+Андрей Харченко (преподаватель)
+25 апреля 2021 00:15
+
+Добрый вечер, Тимофей!
+
+Вы отлично поработали.
+Все отлично.
+
+Хорошего вечера!

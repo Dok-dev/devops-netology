@@ -118,3 +118,11 @@ https://habr.com/ru/company/iloveip/blog/339648/
 https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/routing-to-elb-load-balancer.html    
 https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route53_record    
 https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route53_hosted_zone_dnssec    
+
+---
+
+Денис Альмухаметов (преподаватель)
+2 января 2022 12:06
+
+Все отлично!
+Респект за все выполненные пункты!

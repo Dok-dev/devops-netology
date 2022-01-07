@@ -115,3 +115,12 @@ https://github.com/terraform-aws-modules/terraform-aws-autoscaling/issues/16
 https://stackoverflow.com/questions/57538965/aws-lb-target-group-attachment-attaching-multiple-instances-to-per-target-group    
 https://ramasankarmolleti.com/2021/02/18/configure-ec2-alb-using-terraform/    
 
+---
+
+Денис Альмухаметов (преподаватель)
+26 декабря 2021 12:49
+
+Добрый день
+
+Все очень круто!
+Некоторые вещи заберу себе в качестве примера оформления!

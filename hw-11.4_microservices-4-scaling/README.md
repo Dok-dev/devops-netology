@@ -34,3 +34,12 @@
 
 > **Ответ:**    
 > Playbook для сборки кластера: https://github.com/Dok-dev/devops-netology/tree/main/hw-11.4_microservices-4-scaling/playbook
+
+---
+
+Андрей Копылов (преподаватель)
+2 октября 2021 15:53
+
+Добрый день!
+
+Зачтено

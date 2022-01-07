@@ -113,5 +113,16 @@ Your version of Terraform is out of date! The latest version
 is 0.15.4. You can update by downloading from https://www.terraform.io/downloads.html
 ```
 
+---
+
+Андрей Борю (преподаватель)
+28 мая 2021 05:47
+
+Здравствуйте, Тимофей.
+
+Спасибо за ответы на вопросы.
+Единственное, я бы от Сloud Formation отказался в пользу терраформа, т.к. это уже слегка устаревшая технология.
+
+Присылайте следующие задания.
 
 

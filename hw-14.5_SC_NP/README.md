@@ -142,3 +142,12 @@ https://tufin.medium.com/best-practices-for-kubernetes-network-policies-2b643c4b
 https://orca.tufin.io/netpol/    
 https://habr.com/ru/company/flant/blog/490174/    
 https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/    
+
+---
+
+Андрей Копылов (преподаватель)
+13 декабря 2021 22:32
+
+Добрый день!
+
+Отлично

@@ -226,3 +226,12 @@ https://habr.com/ru/company/dataline/blog/571356/
 https://tech.davidfield.co.uk/from-zero-to-code-hashicorp-vault-using-approle-to-pull-secrets/    
 https://learn.hashicorp.com/tutorials/vault/getting-started-apis    
 https://www.vaultproject.io/docs/auth/approle    
+
+---
+
+Андрей Копылов (преподаватель)
+8 декабря 2021 19:58
+
+Добрый день!
+
+Отлично
