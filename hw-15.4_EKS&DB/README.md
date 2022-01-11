@@ -129,4 +129,4 @@ https://medium.com/@molafisoye/creating-an-rds-db-cross-region-replica-in-aws-us
 https://learn.hashicorp.com/tutorials/terraform/aws-rds    
 https://registry.terraform.io/modules/terraform-aws-modules/eks/aws/latest    
 https://docs.amazonaws.cn/en_us/eks/latest/userguide/install-aws-iam-authenticator.html    
-
+https://varlogdiego.com/eks-your-current-user-or-role-does-not-have-access-to-kubernetes    
