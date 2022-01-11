@@ -89,7 +89,7 @@
 > vagrant@vagrant:~$ mkdir -p $HOME/bin && cp ./aws-iam-authenticator $HOME/bin/aws-iam-authenticator && export PATH=$PATH:$HOME/bin
 > vagrant@vagrant:~$ echo 'export PATH=$PATH:$HOME/bin' >> ~/.bashrc
 > ```
-
+>
 > [Конфигурация Terraform](aws-cloud-terraform/) с блоками задания.
 >
 > Полученные ресурсы:    
@@ -97,17 +97,17 @@
 > ![aws-sources2](img/aws-sources2.png)    
 > ![aws-sources3](img/aws-sources3.png)    
 > ![aws-sources4](img/aws-sources4.png)    
-> ![aws-sources5](img/aws-sources5.png)    
+> ![aws-outputs1](img/aws-outputs1.png)    
 >
 > ![aws-db_cluster](img/aws-db_cluster.png)    
-> ![aws-eks-cluster(img/aws-eks-cluster.png)    
+> ![aws-eks-cluster](img/aws-eks-cluster.png)    
 > ![aws-eks-cluster-workers](img/aws-eks-cluster-workers.png)    
 > ![aws-lb](img/aws-lb.png)    
 > 
 > [Конфигурация для деплоймента](aws-cloud-terraform/deployment/) в k8s.   
 > 
 > Ресурсы подключенного кластера после деплоя:    
-> ![ya-k8s-service](img/ya-k8s-service.png)    
+> ![aws-k8s-service](img/aws-k8s-service.png)    
 >
 > Подключаемся браузером к балансировщику:    
 > ![aws-phpmyadmin](img/aws-phpmyadmin.png)    
