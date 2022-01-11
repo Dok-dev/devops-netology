@@ -121,7 +121,7 @@ resource "yandex_kubernetes_node_group" "node_group1" {
     location {
       zone = yandex_vpc_subnet.public.zone
     }
-    /* #  В группе с автоматическим масштабированием возможна только одна зона доступности
+    /* # !!!  В группе с автоматическим масштабированием возможна только одна зона доступности !!!
     location {
       zone      = yandex_vpc_subnet.public2.zone
     }

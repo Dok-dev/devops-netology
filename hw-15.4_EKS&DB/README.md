@@ -45,7 +45,7 @@
 > ![ya-k8s-cluster](img/ya-k8s-cluster.png)    
 > ![ya-lb](img/ya-lb.png)    
 > 
-> [Конфигурация для деплоймента](deployment/) в k8s.   
+> [Конфигурация для деплоймента](yandex-cloud-terraform/deployment/) в k8s.   
 > 
 > Ресурсы подключенного кластера после деплоя:    
 > ![ya-k8s-nodes](img/ya-k8s-nodes.png)    
@@ -82,29 +82,35 @@
 
 > **Выполнение:**    
 > 
+> Для подключения к кластеру EKS нам понадобится "aws-iam-authenticator":
+> ```bash
+> vagrant@vagrant:~$ curl -o aws-iam-authenticator https://amazon-eks.s3.cn-north-1.amazonaws.com.cn/1.21.2/2021-07-05/bin/linux/amd64/aws-iam-authenticator
+> vagrant@vagrant:~$ chmod +x ./aws-iam-authenticator
+> vagrant@vagrant:~$ mkdir -p $HOME/bin && cp ./aws-iam-authenticator $HOME/bin/aws-iam-authenticator && export PATH=$PATH:$HOME/bin
+> vagrant@vagrant:~$ echo 'export PATH=$PATH:$HOME/bin' >> ~/.bashrc
+> ```
+
 > [Конфигурация Terraform](aws-cloud-terraform/) с блоками задания.
 >
 > Полученные ресурсы:    
-> ![ya-sources1](img/ya-sources1.png)    
-> ![ya-sources1](img/ya-sources2.png)    
+> ![aws-sources1](img/aws-sources1.png)    
+> ![aws-sources2](img/aws-sources2.png)    
+> ![aws-sources3](img/aws-sources3.png)    
+> ![aws-sources4](img/aws-sources4.png)    
+> ![aws-sources5](img/aws-sources5.png)    
 >
-> ![ya-dashboard](img/ya-dashboard.png)    
-> ![ya-mysql-cluster](img/ya-mysql-cluster.png)    
-> ![ya-mysql-nodes](img/ya-mysql-nodes.png)    
-> ![ya-k8s-cluster](img/ya-k8s-cluster.png)    
-> ![ya-lb](img/ya-lb.png)    
+> ![aws-db_cluster](img/aws-db_cluster.png)    
+> ![aws-eks-cluster(img/aws-eks-cluster.png)    
+> ![aws-eks-cluster-workers](img/aws-eks-cluster-workers.png)    
+> ![aws-lb](img/aws-lb.png)    
 > 
-> [Конфигурация для деплоймента](deployment/) в k8s.   
+> [Конфигурация для деплоймента](aws-cloud-terraform/deployment/) в k8s.   
 > 
 > Ресурсы подключенного кластера после деплоя:    
-> ![ya-k8s-nodes](img/ya-k8s-nodes.png)    
->
-> Особенно нас интересует LoadBalancer-сервис, с подключеным автоматечески балансировщиком и ингресом Яндекса:    
 > ![ya-k8s-service](img/ya-k8s-service.png)    
 >
 > Подключаемся браузером к балансировщику:    
-> ![ya-phpmyadmin](img/ya-phpmyadmin.png)    
-
+> ![aws-phpmyadmin](img/aws-phpmyadmin.png)    
 
 
 ---
@@ -118,4 +124,9 @@ https://kubernetes.io/docs/reference/access-authn-authz/_print/
 https://kubernetes.io/docs/concepts/services-networking/ingress-controllers/    
 https://serveradmin.ru/kubernetes-ingress/    
 https://cloud.yandex.ru/docs/managed-kubernetes/operations/create-load-balancer !!!    
+https://github.com/cloudposse/terraform-aws-rds-cluster    
+https://medium.com/@molafisoye/creating-an-rds-db-cross-region-replica-in-aws-using-terraform-c15d480b5f9d    
+https://learn.hashicorp.com/tutorials/terraform/aws-rds    
+https://registry.terraform.io/modules/terraform-aws-modules/eks/aws/latest    
+https://docs.amazonaws.cn/en_us/eks/latest/userguide/install-aws-iam-authenticator.html    
 

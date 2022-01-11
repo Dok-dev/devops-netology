@@ -1,0 +1,15 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: phpmyadmin-http-ingress
+spec:
+  rules:
+    - host: travel-pt.ru
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              serviceName: phpmyadmin-service
+              servicePort: 80
