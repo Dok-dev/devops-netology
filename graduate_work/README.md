@@ -162,8 +162,8 @@
 > ansible-playbook -i inventory/prod_cluster/inventory.ini cluster.yml -b -v -e ansible_user=ubuntu
 > ```
 > 
-> [Конфигурация Terraform Вариант 1 (Ansible + Kubespray)](terraform/)    
-> [Конфигурация Terraform Вариант 2 (Yandex Managed Service for Kubernetes)](terraform2/)    
+> [Конфигурация Terraform Вариант 1 (Ansible + Kubespray)](https://gitlab.com/Dok-dev/graduate_work/-/tree/main/terraform)    
+> [Конфигурация Terraform Вариант 2 (Yandex Managed Service for Kubernetes)](https://gitlab.com/Dok-dev/graduate_work/-/tree/main/terraform2)    
 > Выполнены и работоспособны оба.
 > 
 > ```bash
