@@ -2,7 +2,7 @@ version: 3
 automerge: true
 delete_source_branch_on_merge: true
 
-# Планирование и аплай для двух воркспейсов stage и prod
+# Планирование и пайплайн для двух воркспейсов stage и prod
 projects:
 - dir: .
   workspace: stage
