@@ -303,14 +303,14 @@
 
 1. Репозиторий с конфигурационными файлами Terraform и готовность продемонстрировать создание всех ресурсов с нуля.    
 > Т.к. на момент выполнения Terraform Cloud был несколько дней не доступен в РФ, был создан вариант с S3 bucket в ЯО.    
-> [Конфигурация Terraform Вариант 1 (Ansible + Kubespray)](terraform/)   
+> [Конфигурация Terraform Вариант 1 (Ansible + Kubespray)](https://gitlab.com/Dok-dev/graduate_work/-/tree/main/terraform)   
 > Отработка Ansible:     
 > ![ansible](img/ansible.png)    
 > Поды полученного кластера в YC:    
 > ![2.1](img/2.1.png)    
 > ![kuberspray](img/kuberspray1.png)
 >
-> [Конфигурация Terraform Вариант 2 (Yandex Managed Service for Kubernetes)](terraform2/)    
+> [Конфигурация Terraform Вариант 2 (Yandex Managed Service for Kubernetes)](https://gitlab.com/Dok-dev/graduate_work/-/tree/main/terraform2)    
 > Выполнены и работоспособны оба.   
 > Дашборд всех ресурсов после сборки:    
 > ![souces](img/yc_souces.png)
