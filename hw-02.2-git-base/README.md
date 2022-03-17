@@ -129,3 +129,9 @@ https://www.jetbrains.com/help/pycharm/commit-and-push-changes.html – здес
 Хорошая работа, судя по трем репозиториями проблем при использовании нескольких удаленных хранилищ возникнуть не должно.
 Удачи в продолжении курса!
 
+---
+
+Доп. материалы:    
+https://git-scm.com/book/ru/v2    
+https://www.atlassian.com/ru/git/tutorials/what-is-git    
+https://ohshitgit.com/
