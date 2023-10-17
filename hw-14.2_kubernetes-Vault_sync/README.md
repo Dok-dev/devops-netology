@@ -124,10 +124,12 @@ client.secrets.kv.v2.read_secret_version(
 > HA Enabled         false
 > ```
 > 
-> Распечатываем Vautlt:    
+> Распечатываем Vautlt:
+
 ![14-02-vault_init](./img/vault_init.png)
 > 
-> Попробуем зайти:    
+> Попробуем зайти:
+
 ![14-02-vault_login](./img/vault_login.png)
 > 
 > Включим движок secret для хранения ключей:    
@@ -187,7 +189,8 @@ client.secrets.kv.v2.read_secret_version(
 > Success! Data written to: auth/approle/role/fedora_role
 > ```
 > 
-> Проверим созданную роль:    
+> Проверим созданную роль:
+
 ![14-02-07](./img/7.png) 
 > 
 > Получим RoleID:    
