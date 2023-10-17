@@ -10,7 +10,7 @@ kubectl apply -f 14.2/vault-pod.yml
 
 > **Выполнение:**    
 > 
-> ![14-02-01](./img/1.png)    
+![14-02-01](./img/1.png)    
 
 Получить значение внутреннего IP пода
 
@@ -23,8 +23,8 @@ kubectl get pod 14.2-netology-vault -o json | jq -c '.status.podIPs'
 
 > **Выполнение:**    
 > 
-> ![14-02-02](./img/2.png)   
-> ![14-02-03](./img/3.png)   
+![14-02-02](./img/2.png)   
+![14-02-03](./img/3.png)   
 
 
 Запустить второй модуль для использования в качестве клиента
@@ -42,7 +42,7 @@ pip install hvac
 
 > **Выполнение:**    
 > 
-> ![14-02-04](./img/4.png)   
+![14-02-04](./img/4.png)   
 
 Запустить интепретатор Python и выполнить следующий код, предварительно
 поменяв IP и токен
@@ -69,7 +69,7 @@ client.secrets.kv.v2.read_secret_version(
 
 > **Выполнение:**    
 > 
-> ![14-02-05](./img/5.png) 
+![14-02-05](./img/5.png) 
 
 ## Задача 2 (*): Работа с секретами внутри модуля
 
@@ -125,10 +125,10 @@ client.secrets.kv.v2.read_secret_version(
 > ```
 > 
 > Распечатываем Vautlt:    
-> ![14-02-vault_init](./img/vault_init.png)
+![14-02-vault_init](./img/vault_init.png)
 > 
 > Попробуем зайти:    
-> ![14-02-vault_login](./img/vault_login.png)
+![14-02-vault_login](./img/vault_login.png)
 > 
 > Включим движок secret для хранения ключей:    
 > ```console
@@ -188,7 +188,7 @@ client.secrets.kv.v2.read_secret_version(
 > ```
 > 
 > Проверим созданную роль:    
-> ![14-02-07](./img/7.png) 
+![14-02-07](./img/7.png) 
 > 
 > Получим RoleID:    
 > ```console
@@ -207,13 +207,13 @@ client.secrets.kv.v2.read_secret_version(
 > ```bash
 > curl --request POST --data '{"role_id":"1ead29bc-1b64-a7b6-e7db-a3e01ceb75aa"}' http://vault:8200/v1/auth/approle/login --insecure | jq
 > ```
-> ![14-02-06](./img/6.png) 
+![14-02-06](./img/6.png) 
 >
 > С помощью полученного токена запросим конфиденциальную информацию из Vault:    
 > ```bash
 > curl --header "X-Vault-Token: s.SgBYiSVNl6lhgEnUp3L5WyWc" --request GET http://vault:8200/v1/secret/fedora/secretkey
 >```
-> ![14-02-08](./img/8.png) 
+![14-02-08](./img/8.png) 
 >
 
 ---
